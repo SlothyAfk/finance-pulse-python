@@ -48,9 +48,10 @@ news about a company or sector -> search_statements; what is big right now -> tr
 unusual attention -> screen; how coverage or tone changed over time -> sentiment_series; which broad subjects a
 company or sector is in the news for -> themes.
 Cite `source` and `published_at` when you quote a statement; `source_type` says whether it comes from news,
-speculative analysis or reddit. Symbols are codes extracted by a language model: most equities match their
-ticker, but macro entities are codes too (FED, ECB, CRUDE, US10Y). Sentiment describes the statement, not a
-price forecast. Every result carries `lag_days`, the age of the newest statement in days: if it is well above
+speculative analysis or reddit. Symbols are entity codes with a kind: equities and ETFs under their ticker
+(NVDA, 0700.HK), and indices, rates, FX, crypto, commodities and organisations under short codes (SPX, US10Y,
+USD, BTC, GOLD, FED); `entities` on a statement gives each code's name and kind. Sentiment describes the
+statement, not a price forecast. Every result carries `lag_days`, the age of the newest statement in days: if it is well above
 zero, news collection is behind, so say the data may be stale. Call `reference` when you need theme ids or want
 to know about gaps in the data."""
 

@@ -7,6 +7,9 @@ is published and turns every article into **statements**: one-sentence facts wit
 sector, source and publication time. Statements about the same development are clustered into **topics**, and
 topics into 19 **themes**. [fintopic.news](https://fintopic.news/) is a front page built on the same API.
 
+The same setup guide, with the other guides and the API reference, is on the docs site:
+[Use Finance Pulse from Claude, Cursor or Python](https://fintopic.news/docs/use-with-claude-and-python).
+
 This package gives you two ways to use it:
 
 - a **Python client** for scripts, notebooks and pipelines;
@@ -172,8 +175,9 @@ the [API reference](https://fintopic.news/docs/reference), and the
 
 ## What the data is, and is not
 
-- **Symbols are codes extracted by a language model**, not exchange tickers. Most equities match their ticker;
-  macro entities are codes too (`FED`, `ECB`, `CRUDE`, `US10Y`). Map the codes you trade before relying on them.
+- **Symbols are canonical entity codes with a kind.** Equities and ETFs appear under their ticker (`NVDA`,
+  `0700.HK`); indices, rates, FX, crypto, commodities and organisations under short codes (`SPX`, `US10Y`, `USD`,
+  `BTC`, `GOLD`, `FED`). Use `kind=["equity", "etf"]` for tradable tickers only.
 - **Sentiment describes the statement**, not a price forecast. A symbol's sentiment is the count of its
   statements' labels.
 - **The window is a rolling 62 days.** `meta()` lists known outages and delays under `incidents`.

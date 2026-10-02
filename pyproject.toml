@@ -36,6 +36,7 @@ finance-pulse-mcp = "finance_pulse.mcp_server:main"
 [project.urls]
 Homepage = "https://fintopic.news/docs"
 Documentation = "https://fintopic.news/docs/reference"
+Usage = "https://fintopic.news/docs/use-with-claude-and-python"
 "Get an API key" = "https://rapidapi.com/evankos/api/finance-pulse/pricing"
 Repository = "https://github.com/SlothyAfk/finance-pulse-python"
 Issues = "https://github.com/SlothyAfk/finance-pulse-python/issues"
