@@ -12,3 +12,7 @@ build/
 .env
 *.cursor.json
 *.cursor.json.tmp
+
+# credentials: never commit or package
+pypi
+.pypirc
