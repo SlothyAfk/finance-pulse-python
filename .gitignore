@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.egg-info/
+dist/
+build/
+*.whl
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.idea/
+.vscode/
+.env
+*.cursor.json
+*.cursor.json.tmp
