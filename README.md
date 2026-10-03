@@ -76,7 +76,7 @@ Then ask things like:
 | `themes` | The standing subjects with their volume and sentiment, optionally only those a symbol or sector appears in |
 | `reference` | The data window, known data incidents, theme ids and accepted filter values |
 
-Each tool call is one API request. Results are trimmed and default to small pages, so the free plan goes a long way.
+Each tool call is one API request. Results are trimmed and default to small pages.
 
 ## Use it from Python
 
@@ -128,8 +128,7 @@ for s in fp.poll_feed(sector="Energy", importance_min="high", cursor_file="energ
     print(s["indexed_at"], s["statement"], s["source_url"])
 ```
 
-The API builds new data about every 2.5 minutes, so the poller waits 150 seconds between polls by default. One
-poller at that rate makes about 576 requests a day. Timeouts and server errors are retried; a used-up quota (429)
+The API builds new data about every 2.5 minutes, so the poller waits 150 seconds between polls by default. Timeouts and server errors are retried; a used-up quota (429)
 is raised.
 
 ### More than one page
