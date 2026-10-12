@@ -1,0 +1,73 @@
+{
+ "data": [
+  {
+   "id": "TSM",
+   "kind": "equity",
+   "name": "Taiwan Semiconductor Manufacturing",
+   "mentions": 48,
+   "topics": 28,
+   "sources": 8,
+   "bullish": 29,
+   "bearish": 11,
+   "neutral": 8,
+   "score": 0.375,
+   "mentions_prev_period": 22,
+   "change": 26,
+   "last_seen": "2026-10-12T10:45:48Z",
+   "mentions_single": 45,
+   "bullish_single": 28,
+   "bearish_single": 11,
+   "neutral_single": 6,
+   "score_single": 0.3778
+  },
+  {
+   "id": "VOW3.DE",
+   "kind": "equity",
+   "name": "Volkswagen AG VZO O.N.",
+   "mentions": 24,
+   "topics": 13,
+   "sources": 19,
+   "bullish": 0,
+   "bearish": 19,
+   "neutral": 5,
+   "score": -0.7917,
+   "mentions_prev_period": 0,
+   "change": 24,
+   "last_seen": "2026-10-12T12:23:16Z",
+   "mentions_single": 24,
+   "bullish_single": 0,
+   "bearish_single": 19,
+   "neutral_single": 5,
+   "score_single": -0.7917
+  },
+  {
+   "id": "AMZN",
+   "kind": "equity",
+   "name": "Amazon.com Inc",
+   "mentions": 27,
+   "topics": 10,
+   "sources": 16,
+   "bullish": 15,
+   "bearish": 3,
+   "neutral": 9,
+   "score": 0.4444,
+   "mentions_prev_period": 8,
+   "change": 19,
+   "last_seen": "2026-10-12T13:00:42Z",
+   "mentions_single": 25,
+   "bullish_single": 13,
+   "bearish_single": 3,
+   "neutral_single": 9,
+   "score_single": 0.4
+  }
+ ],
+ "period": "d",
+ "since": null,
+ "until": null,
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

@@ -2,4 +2,4 @@
 from .client import RAPIDAPI, Backend, FinancePulse, FinancePulseError
 
 __all__ = ["FinancePulse", "FinancePulseError", "Backend", "RAPIDAPI"]
-__version__ = "0.1.0"
+__version__ = "0.2.0"

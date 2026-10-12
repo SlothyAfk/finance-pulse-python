@@ -1,0 +1,108 @@
+{
+ "data": {
+  "entity": {
+   "type": "symbol",
+   "id": "NVDA",
+   "name": null
+  },
+  "interval": "day",
+  "buckets": [
+   {
+    "t": "2026-10-07T00:00:00Z",
+    "count": 115,
+    "bullish": 71,
+    "bearish": 6,
+    "neutral": 38,
+    "by_importance": {
+     "low": 16,
+     "medium": 23,
+     "high": 72,
+     "ultra": 4
+    },
+    "sources": 56,
+    "score": 0.5652
+   },
+   {
+    "t": "2026-10-08T00:00:00Z",
+    "count": 96,
+    "bullish": 41,
+    "bearish": 21,
+    "neutral": 34,
+    "by_importance": {
+     "low": 13,
+     "medium": 24,
+     "high": 59,
+     "ultra": 0
+    },
+    "sources": 36,
+    "score": 0.2083
+   },
+   {
+    "t": "2026-10-09T00:00:00Z",
+    "count": 73,
+    "bullish": 31,
+    "bearish": 16,
+    "neutral": 26,
+    "by_importance": {
+     "low": 13,
+     "medium": 17,
+     "high": 41,
+     "ultra": 2
+    },
+    "sources": 34,
+    "score": 0.2055
+   },
+   {
+    "t": "2026-10-10T00:00:00Z",
+    "count": 30,
+    "bullish": 11,
+    "bearish": 3,
+    "neutral": 16,
+    "by_importance": {
+     "low": 3,
+     "medium": 15,
+     "high": 10,
+     "ultra": 2
+    },
+    "sources": 15,
+    "score": 0.2667
+   },
+   {
+    "t": "2026-10-11T00:00:00Z",
+    "count": 16,
+    "bullish": 6,
+    "bearish": 1,
+    "neutral": 9,
+    "by_importance": {
+     "low": 4,
+     "medium": 8,
+     "high": 4,
+     "ultra": 0
+    },
+    "sources": 11,
+    "score": 0.3125
+   },
+   {
+    "t": "2026-10-12T00:00:00Z",
+    "count": 19,
+    "bullish": 11,
+    "bearish": 5,
+    "neutral": 3,
+    "by_importance": {
+     "low": 3,
+     "medium": 7,
+     "high": 9,
+     "ultra": 0
+    },
+    "sources": 10,
+    "score": 0.3158
+   }
+  ]
+ },
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

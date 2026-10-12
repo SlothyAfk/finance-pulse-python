@@ -1,0 +1,113 @@
+{
+ "data": {
+  "id": "f1544394-3f5a-4ce9-b3d9-76d6a6293c24",
+  "name": "IonQ acquires Elisity for up to $1.3 billion to expand cybersecurity",
+  "theme_id": "5f0acf48-3fd8-56ec-9199-07fdeb202d4d",
+  "created_at": "2026-10-12T11:00:00Z",
+  "updated_at": "2026-10-12T12:29:00Z",
+  "statements": 8,
+  "total_statements": 8,
+  "sources": 8,
+  "statements_24h": 8,
+  "statements_4h": 8,
+  "sentiment": {
+   "bullish": 8,
+   "bearish": 0,
+   "neutral": 0
+  },
+  "sentiment_score": 1.0,
+  "symbols": [],
+  "entities": [],
+  "sectors": [
+   "InformationTechnology"
+  ],
+  "latest_statement": {
+   "id": "123153be-fcf6-5d1b-b575-4b1059e1a592",
+   "statement": "IonQ is acquiring Elisity for a $1.3 billion all-stock deal",
+   "published_at": "2026-10-12T12:29:00Z",
+   "sentiment": "bullish",
+   "source_url": "https://breakingthenews.net/Article/IonQ-to-acquire-Elisity-in-dollar1.3B-deal/67277628",
+   "source_domain": "breakingthenews.net",
+   "article_title": "IonQ to acquire Elisity in $1.3B deal",
+   "image_url": null
+  },
+  "statements_7d": 8,
+  "revision": "4b5eb76adf02bc2a8436035e87454828d23047d17fa2ba696d48ec35be331acf",
+  "storylines": [],
+  "source_mix": {
+   "news": 8
+  },
+  "statements_page": [
+   {
+    "id": "123153be-fcf6-5d1b-b575-4b1059e1a592",
+    "statement": "IonQ is acquiring Elisity for a $1.3 billion all-stock deal",
+    "published_at": "2026-10-12T12:29:00Z",
+    "indexed_at": "2026-10-12T13:01:30.876140Z",
+    "sentiment": "bullish",
+    "importance": "high",
+    "source_type": "news",
+    "source_url": "https://breakingthenews.net/Article/IonQ-to-acquire-Elisity-in-dollar1.3B-deal/67277628",
+    "source_domain": "breakingthenews.net",
+    "article_title": "IonQ to acquire Elisity in $1.3B deal",
+    "image_url": null,
+    "symbols": [],
+    "entities": [],
+    "sectors": [
+     "InformationTechnology"
+    ],
+    "topic_id": "f1544394-3f5a-4ce9-b3d9-76d6a6293c24",
+    "topic_name": "IonQ acquires Elisity for up to $1.3 billion to expand cybersecurity",
+    "theme_id": "5f0acf48-3fd8-56ec-9199-07fdeb202d4d"
+   },
+   {
+    "id": "7d3e2ed1-a1ae-5e57-afbe-7c9cd9a1ce98",
+    "statement": "IonQ is acquiring cybersecurity company Elisityn for $1.3 billion",
+    "published_at": "2026-10-12T12:15:00Z",
+    "indexed_at": "2026-10-12T12:39:29.307761Z",
+    "sentiment": "bullish",
+    "importance": "high",
+    "source_type": "news",
+    "source_url": "https://www.kauppalehti.fi/uutiset/a/09973860-2e33-4789-8814-830db28d8573",
+    "source_domain": "kauppalehti.fi",
+    "article_title": "IQM:n kilpailija teki taas j\u00e4ttikaupan \u2013 IonQ ostaa Elisityn 1,3 miljardilla dollarilla",
+    "image_url": null,
+    "symbols": [],
+    "entities": [],
+    "sectors": [
+     "InformationTechnology"
+    ],
+    "topic_id": "f1544394-3f5a-4ce9-b3d9-76d6a6293c24",
+    "topic_name": "IonQ acquires Elisity for up to $1.3 billion to expand cybersecurity",
+    "theme_id": "5f0acf48-3fd8-56ec-9199-07fdeb202d4d"
+   },
+   {
+    "id": "19e75cb1-46d6-5106-882e-8c224216f11d",
+    "statement": "IonQ agreed to buy Elisity in an all-stock deal valued at $1.3 billion",
+    "published_at": "2026-10-12T12:07:52Z",
+    "indexed_at": "2026-10-12T13:09:30.915854Z",
+    "sentiment": "bullish",
+    "importance": "high",
+    "source_type": "news",
+    "source_url": "https://www.investors.com/news/technology/ionq-stock1-3-billion-elisity-deal-quantum-acquisition-spree/",
+    "source_domain": "investors.com",
+    "article_title": "IonQ To Buy Elisity In $1.3 Billion Deal Amid Quantum Acquisition Spree",
+    "image_url": null,
+    "symbols": [],
+    "entities": [],
+    "sectors": [
+     "InformationTechnology"
+    ],
+    "topic_id": "f1544394-3f5a-4ce9-b3d9-76d6a6293c24",
+    "topic_name": "IonQ acquires Elisity for up to $1.3 billion to expand cybersecurity",
+    "theme_id": "5f0acf48-3fd8-56ec-9199-07fdeb202d4d"
+   }
+  ],
+  "statements_cursor": null
+ },
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

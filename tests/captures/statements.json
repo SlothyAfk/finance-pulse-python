@@ -1,0 +1,117 @@
+{
+ "data": [
+  {
+   "id": "59b288af-e53d-5d1d-ad4d-b31d3402a9a6",
+   "statement": "Someone just spent $21 million betting that Nvidia will fall below $180 by January",
+   "published_at": "2026-10-12T12:46:00Z",
+   "indexed_at": "2026-10-12T12:59:30.802731Z",
+   "sentiment": "bearish",
+   "importance": "high",
+   "source_type": "news",
+   "source_url": "https://247wallst.com/investing/2026/10/12/someone-just-spent-21-million-betting-nvidia-falls-below-180-by-january/",
+   "source_domain": "247wallst.com",
+   "article_title": "Someone Just Spent $21 Million Betting Nvidia Falls Below $180 by January",
+   "image_url": null,
+   "symbols": [
+    "NVDA"
+   ],
+   "entities": [
+    {
+     "code": "NVDA",
+     "kind": "equity",
+     "name": "NVIDIA Corporation",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": "tagged"
+    }
+   ],
+   "sectors": [
+    "InformationTechnology"
+   ],
+   "topic_id": "84fc572e-333f-4ad3-a859-710c12ff7b3d",
+   "topic_name": "Someone just spent $21 million betting that Nvidia will fall below $180 by January",
+   "theme_id": "a649bcf3-ff7a-592c-b4d3-b32a369fd55c"
+  },
+  {
+   "id": "cc759a92-acd6-5d7a-b3a3-4aec6b615494",
+   "statement": "Fortune 500 companies are adding Nvidia to their investment portfolios during periods of market uncertainty.",
+   "published_at": "2026-10-12T11:15:13Z",
+   "indexed_at": "2026-10-12T11:28:26.364542Z",
+   "sentiment": "bullish",
+   "importance": "high",
+   "source_type": "news",
+   "source_url": "https://finance.yahoo.com/markets/stocks/articles/adding-nvidia-during-current-uncertainty-111513084.html",
+   "source_domain": "finance.yahoo.com",
+   "article_title": "Adding Nvidia During The Current Uncertainty is How Fortunes Are Made",
+   "image_url": "https://s.yimg.com/ny/mysterio/api/486800e71e64b62d263a9e696115ca5097d9869c7f13f6bae20b694fc60f9d84/ynews/resizefill_w1200;quality_80;format_webp/https://media.zenfs.com/en/24_7_wall_st__718/7c796f6a82a8254a7021c16ee609b809.jpg",
+   "symbols": [
+    "NVDA"
+   ],
+   "entities": [
+    {
+     "code": "NVDA",
+     "kind": "equity",
+     "name": "NVIDIA Corporation",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": "tagged"
+    }
+   ],
+   "sectors": [
+    "InformationTechnology"
+   ],
+   "topic_id": "a7b94c23-2fc6-42eb-9300-e6897003b364",
+   "topic_name": "Billionaire Ken Fisher's portfolio picks",
+   "theme_id": "ab6cd68e-2b92-5aa9-a9d9-ceb9e4a540e0"
+  },
+  {
+   "id": "1383fc0a-2e54-5d63-b2c0-93078a68d652",
+   "statement": "Nvidia and Micron Technology received bad news from an unlikely place.",
+   "published_at": "2026-10-12T10:26:00Z",
+   "indexed_at": "2026-10-12T10:34:21.163557Z",
+   "sentiment": "bearish",
+   "importance": "high",
+   "source_type": "news",
+   "source_url": "https://finance.yahoo.com/markets/stocks/articles/nvidia-micron-technology-just-received-102600512.html",
+   "source_domain": "finance.yahoo.com",
+   "article_title": "Nvidia and Micron Technology Just Received Some Very Bad News From an Unlikely Place",
+   "image_url": "https://s.yimg.com/ny/mysterio/api/e3fafc69d0411f8c1a603d44003adca8415f4f2aed3154e3a05b097cf97dbe7c/ynews/resizefill_w1200;quality_80;format_webp/https://media.zenfs.com/en/motleyfool.com/34106a44dd7ca5c6c8398e6ead565f7c.jpg",
+   "symbols": [
+    "MU",
+    "NVDA"
+   ],
+   "entities": [
+    {
+     "code": "MU",
+     "kind": "equity",
+     "name": "Micron Technology Inc",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": "tagged"
+    },
+    {
+     "code": "NVDA",
+     "kind": "equity",
+     "name": "NVIDIA Corporation",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": "tagged"
+    }
+   ],
+   "sectors": [
+    "Industrials",
+    "InformationTechnology"
+   ],
+   "topic_id": "8295f9d3-df71-43a0-8ff9-2c24af4a8ee2",
+   "topic_name": "Nvidia and Micron Technology face pressure",
+   "theme_id": "a649bcf3-ff7a-592c-b4d3-b32a369fd55c"
+  }
+ ],
+ "next_cursor": "WzE3OTE2MzU0MDAsIjM2YjI0ZmY2LTMwNTEtNWFhZi05ODYwLTdmNThhM2MyMDBiNSJd",
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

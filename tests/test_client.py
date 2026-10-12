@@ -153,7 +153,7 @@ def test_merged_theme_redirect_is_followed_with_the_key():
 
 def test_retry_after_and_transient():
     def handler(request):
-        return httpx.Response(503, headers={"retry-after": "60"}, json={"title": "Snapshot upgrading", "status": 503})
+        return httpx.Response(503, headers={"retry-after": "60"}, json={"title": "Temporarily unavailable", "status": 503})
 
     with pytest.raises(FinancePulseError) as info:
         make(handler).meta()
@@ -236,7 +236,7 @@ def test_poll_feed_resumes_mid_page_without_repeating_handled_statements(tmp_pat
 def test_poll_feed_retries_temporary_failures_and_raises_the_rest(monkeypatch):
     slept = []
     monkeypatch.setattr("finance_pulse.client.time.sleep", slept.append)
-    answers = iter([httpx.Response(503, headers={"retry-after": "60"}, json={"title": "Snapshot upgrading"}),
+    answers = iter([httpx.Response(503, headers={"retry-after": "60"}, json={"title": "Temporarily unavailable"}),
                     httpx.ConnectError("down"),
                     httpx.Response(200, json={"data": [{"id": "s1"}], "next_cursor": "c1", "snapshot": SNAPSHOT}),
                     httpx.Response(429, json={"message": "quota"})])
@@ -412,8 +412,85 @@ def test_no_removed_v1_names_are_sent():
     fp.statements(symbol="NVDA", sector="Energy"); fp.feed(sector="Energy"); fp.series(sector="Energy")
     fp.symbols(sector="Energy"); fp.sectors(); fp.topics(sector="Energy"); fp.themes(sector="Energy")
     fp.trending(); fp.meta(); fp.topic("t"); fp.theme("t"); fp.statement("s")
+    fp.symbol("NVDA"); fp.storylines(symbol="MSFT"); fp.storyline("sl")
     for request in seen:
         assert request.url.path.startswith("/v2/")
         assert not {"industry_group", "page", "period_days"} & set(request.url.params.keys())
         if "period" in request.url.params:
             assert request.url.path in ("/v2/symbols", "/v2/sectors")
+
+
+def test_symbol_page_and_lookup():
+    seen = []
+
+    def handler(request):
+        seen.append(request)
+        return httpx.Response(200, json={"data": [], "period": "w", "snapshot": SNAPSHOT})
+
+    fp = make(handler)
+    fp.symbol("0700.HK")
+    fp.symbols(q="micron", period="window", min_mentions=1)
+    fp.symbols(since="2026-10-01T00:00:00Z", until="2026-10-08T00:00:00Z", kind=["equity", "etf"])
+    fp.sectors(since="2026-10-01T00:00:00Z")
+    assert seen[0].url.path == "/v2/symbols/0700.HK" and not seen[0].url.params
+    assert seen[1].url.params["q"] == "micron" and "since" not in seen[1].url.params
+    assert dict(seen[2].url.params) == {"period": "w", "sort": "mentions", "kind": "equity,etf", "min_mentions": "3",
+                                        "since": "2026-10-01T00:00:00Z", "until": "2026-10-08T00:00:00Z",
+                                        "limit": "500"}
+    assert seen[3].url.path == "/v2/sectors" and seen[3].url.params["since"] == "2026-10-01T00:00:00Z"
+
+
+def test_storylines_by_symbol_and_by_ids():
+    seen = []
+
+    def handler(request):
+        seen.append(request)
+        return httpx.Response(200, json={"data": [], "next_cursor": None, "snapshot": SNAPSHOT})
+
+    fp = make(handler)
+    fp.storylines(symbol="MSFT", min_topics=2, sort="mentions", limit=8, cursor="c")
+    fp.storylines(ids=["a", "b"])
+    fp.storyline("sl 1")
+    fp.statements(storyline_id="sl1", symbol="MSFT")
+    fp.topics(storyline_id="sl1")
+    assert dict(seen[0].url.params) == {"symbol": "MSFT", "min_topics": "2", "sort": "mentions", "limit": "8",
+                                        "cursor": "c"}
+    assert dict(seen[1].url.params) == {"ids": "a,b", "min_topics": "1"}       # sort and limit do not apply to ids
+    assert seen[2].url.raw_path.decode() == "/v2/storylines/sl%201"
+    assert seen[3].url.params["storyline_id"] == "sl1" and seen[4].url.params["storyline_id"] == "sl1"
+
+
+def test_absorbed_storyline_redirect_is_followed():
+    def handler(request):
+        if request.url.path == "/v2/storylines/old":
+            return httpx.Response(308, headers={"location": "/v2/storylines/new"})
+        return httpx.Response(200, json={"data": {"id": "new"}, "snapshot": SNAPSHOT})
+
+    assert make(handler).storyline("old")["data"]["id"] == "new"
+
+
+def test_dot_and_empty_ids_are_refused_before_any_request():
+    calls = []
+    fp = make(lambda request: calls.append(1) or httpx.Response(200, json={"data": {}}))
+    for bad in ("", " ", ".", ".."):
+        for method in (fp.topic, fp.symbol, fp.storyline, fp.theme, fp.statement):
+            with pytest.raises(ValueError, match="is not an id"):
+                method(bad)
+    assert calls == []
+
+
+def test_get_refuses_a_query_in_the_path():
+    calls = []
+    fp = make(lambda request: calls.append(1) or httpx.Response(200, json={"data": {}}))
+    for bad in ("/v2/meta?x=1", "/v2/meta#frag"):
+        with pytest.raises(ValueError, match="keyword arguments"):
+            fp.get(bad)
+    assert calls == []
+
+
+def test_a_malformed_path_is_a_value_error_not_a_network_failure():
+    calls = []
+    fp = make(lambda request: calls.append(1) or httpx.Response(200, json={"data": {}}))
+    with pytest.raises(ValueError, match="not a valid path"):
+        fp.get("/v2/topics/abc\n")
+    assert calls == []

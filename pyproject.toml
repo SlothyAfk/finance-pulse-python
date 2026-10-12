@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "finance-pulse"
 dynamic = ["version"]
-description = "Python client and MCP server for the Finance Pulse API: financial news as structured, sourced statements with sentiment, clustered into developments."
+description = "Python client and MCP server for the Finance Pulse API: financial news as structured, sourced statements with sentiment, grouped into developments and storylines."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"

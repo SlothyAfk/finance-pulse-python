@@ -1,0 +1,279 @@
+{
+ "data": {
+  "id": "0bc4b015-8f76-52f1-94d6-f1150a6d635f",
+  "symbol": "MSFT",
+  "entity": {
+   "code": "MSFT",
+   "kind": "equity",
+   "name": "Microsoft Corporation",
+   "exchange": "NASDAQ",
+   "country": "USA",
+   "match": null
+  },
+  "name": "US government suspends Microsoft and Adobe from green card program",
+  "name_topic_id": "a8e52831-abe3-403f-97aa-912527d713be",
+  "first_seen": "2026-10-08T15:23:50Z",
+  "last_seen": "2026-10-10T14:22:23Z",
+  "topics": 9,
+  "statements": 53,
+  "mentions": 48,
+  "sources": 41,
+  "mentions_24h": 0,
+  "mentions_7d": 48,
+  "bullish": 0,
+  "bearish": 37,
+  "neutral": 11,
+  "top_members": [
+   {
+    "id": "a8e52831-abe3-403f-97aa-912527d713be",
+    "name": "US government suspends Microsoft and Adobe from green card program",
+    "statements": 25,
+    "mentions": 24,
+    "created_at": "2026-10-08T15:24:25Z",
+    "updated_at": "2026-10-10T14:22:23Z",
+    "placed_at": null
+   },
+   {
+    "id": "ab9c8075-582e-4012-8c5c-074a920f7507",
+    "name": "US bans Microsoft from sponsoring foreign workers",
+    "statements": 7,
+    "mentions": 7,
+    "created_at": "2026-10-08T17:06:45Z",
+    "updated_at": "2026-10-09T13:14:33Z",
+    "placed_at": null
+   },
+   {
+    "id": "65d2a641-1802-4460-9278-dc88e481a459",
+    "name": "Microsoft accused of fraud by JD Vance",
+    "statements": 5,
+    "mentions": 5,
+    "created_at": "2026-10-08T15:26:32Z",
+    "updated_at": "2026-10-09T02:21:35Z",
+    "placed_at": null
+   },
+   {
+    "id": "06945d83-e6ee-4ea3-bd36-fa3cfc36e7a2",
+    "name": "Microsoft accused of firing 6,000 Americans for foreign indentured servants",
+    "statements": 3,
+    "mentions": 3,
+    "created_at": "2026-10-08T20:13:52Z",
+    "updated_at": "2026-10-09T21:45:00Z",
+    "placed_at": null
+   },
+   {
+    "id": "01499671-b458-4474-91da-ee96987712be",
+    "name": "US immigration crackdown targets Microsoft and tech firms",
+    "statements": 4,
+    "mentions": 3,
+    "created_at": "2026-10-08T21:20:34Z",
+    "updated_at": "2026-10-09T09:00:27Z",
+    "placed_at": null
+   }
+  ],
+  "related": [
+   {
+    "id": "21d58ec1-6011-5af1-acff-90062c4b7abc",
+    "symbol": "ADBE",
+    "name": "US government suspends Microsoft and Adobe from green card program",
+    "topics": 2,
+    "shared_topics": 2
+   },
+   {
+    "id": "55aaa831-f08b-5a0d-8655-f88a27186c67",
+    "symbol": "WIPRO.NS",
+    "name": "U.S. Labor Secretary suspends Microsoft, Adobe, Cognizant, Infosys, Tata Consultancy Services, Wipro, HCL Technologies, and Capgemini from PERM",
+    "topics": 1,
+    "shared_topics": 1
+   },
+   {
+    "id": "618a295a-91a6-5c05-a38a-ea26372b3f1b",
+    "symbol": "INFY",
+    "name": "US suspends PERM for Indian IT majors",
+    "topics": 3,
+    "shared_topics": 1
+   },
+   {
+    "id": "6e1f6e8e-41e4-5b60-b073-e47d9a26fe36",
+    "symbol": "TCS.NS",
+    "name": "U.S. Labor Secretary suspends Microsoft, Adobe, Cognizant, Infosys, Tata Consultancy Services, Wipro, HCL Technologies, and Capgemini from PERM",
+    "topics": 1,
+    "shared_topics": 1
+   }
+  ],
+  "members": [
+   {
+    "id": "a8e52831-abe3-403f-97aa-912527d713be",
+    "name": "US government suspends Microsoft and Adobe from green card program",
+    "statements": 25,
+    "mentions": 24,
+    "created_at": "2026-10-08T15:24:25Z",
+    "updated_at": "2026-10-10T14:22:23Z",
+    "placed_at": null
+   },
+   {
+    "id": "65d2a641-1802-4460-9278-dc88e481a459",
+    "name": "Microsoft accused of fraud by JD Vance",
+    "statements": 5,
+    "mentions": 5,
+    "created_at": "2026-10-08T15:26:32Z",
+    "updated_at": "2026-10-09T02:21:35Z",
+    "placed_at": null
+   },
+   {
+    "id": "1a3ec9e0-73bb-49fc-bebd-abe795b08ec6",
+    "name": "U.S. Labor Secretary suspends Microsoft, Adobe, Cognizant, Infosys, Tata Consultancy Services, Wipro, HCL Technologies, and Capgemini from PERM",
+    "statements": 2,
+    "mentions": 1,
+    "created_at": "2026-10-08T16:58:31Z",
+    "updated_at": "2026-10-09T17:17:50Z",
+    "placed_at": null
+   },
+   {
+    "id": "ab9c8075-582e-4012-8c5c-074a920f7507",
+    "name": "US bans Microsoft from sponsoring foreign workers",
+    "statements": 7,
+    "mentions": 7,
+    "created_at": "2026-10-08T17:06:45Z",
+    "updated_at": "2026-10-09T13:14:33Z",
+    "placed_at": null
+   }
+  ],
+  "statements_page": [
+   {
+    "id": "6c20ca89-ad8b-5670-b7a1-c29da3fb9933",
+    "statement": "Microsoft replaced laid-off workers with foreign hires after the administration barred the company from sponsoring green cards.",
+    "published_at": "2026-10-10T14:22:23Z",
+    "indexed_at": "2026-10-10T14:27:43.935921Z",
+    "sentiment": "neutral",
+    "importance": "high",
+    "source_type": "news",
+    "source_url": "https://www.cnbc.com/2026/10/10/vance-microsoft-h1b-layoffs-visa-data.html",
+    "source_domain": "cnbc.com",
+    "article_title": "Vance says Microsoft replaced laid-off workers with foreign hires. Here\u2019s what the visa data shows",
+    "image_url": null,
+    "symbols": [
+     "MSFT"
+    ],
+    "entities": [
+     {
+      "code": "MSFT",
+      "kind": "equity",
+      "name": "Microsoft Corporation",
+      "exchange": "NASDAQ",
+      "country": "USA",
+      "match": "tagged"
+     }
+    ],
+    "sectors": [
+     "InformationTechnology"
+    ],
+    "topic_id": "a8e52831-abe3-403f-97aa-912527d713be",
+    "topic_name": "US government suspends Microsoft and Adobe from green card program",
+    "theme_id": "88994f65-d9b4-53f0-a481-e39a520884fa"
+   },
+   {
+    "id": "9857fc13-d92a-5c18-863b-0841457c26c1",
+    "statement": "Microsoft is facing a ban from the US government's key immigration program due to alleged bad-faith hiring practices.",
+    "published_at": "2026-10-10T12:23:49Z",
+    "indexed_at": "2026-10-10T12:39:41.536027Z",
+    "sentiment": "bearish",
+    "importance": "high",
+    "source_type": "news",
+    "source_url": "https://247wallst.com/investing/2026/10/10/trump-administration-brings-the-hammer-down-on-microsoft-after-vance-said-the-company-laid-off-6000-american-workers-while-getting-6300-h-1b-visas-for-foreign-workers/",
+    "source_domain": "247wallst.com",
+    "article_title": "Trump Administration Brings The Hammer Down On Microsoft After Vance Said The Company Laid Off \u201c6,000 American Workers\u201d While Getting 6,300 H-1B Visas For Foreign Workers",
+    "image_url": null,
+    "symbols": [
+     "MSFT"
+    ],
+    "entities": [
+     {
+      "code": "MSFT",
+      "kind": "equity",
+      "name": "Microsoft Corporation",
+      "exchange": "NASDAQ",
+      "country": "USA",
+      "match": "tagged"
+     }
+    ],
+    "sectors": [
+     "InformationTechnology"
+    ],
+    "topic_id": "86159120-5a37-43c1-a6e6-f36721e72a56",
+    "topic_name": "Microsoft faces US visa ban",
+    "theme_id": "88994f65-d9b4-53f0-a481-e39a520884fa"
+   },
+   {
+    "id": "7218fb50-a5c9-56c0-ad45-7b538e2a0857",
+    "statement": "JD Vance claims Microsoft swapped 6,000 laid-off Americans for foreign indentured servants.",
+    "published_at": "2026-10-09T21:45:00Z",
+    "indexed_at": "2026-10-10T01:41:32.254042Z",
+    "sentiment": "bearish",
+    "importance": "high",
+    "source_type": "news",
+    "source_url": "https://finance.yahoo.com/economy/policy/articles/jd-vance-slams-microsoft-says-214500533.html",
+    "source_domain": "finance.yahoo.com",
+    "article_title": "JD Vance slams Microsoft, says it swapped 6,000 laid-off Americans for \u2018foreign indentured servants.\u2019 Microsoft responds",
+    "image_url": "https://s.yimg.com/ny/mysterio/api/68f6198371a084c314d47a93904cc0d59f859e7316be91e454164eb9883615ca/ynews/resizefill_w1200;quality_80;format_webp/https://media.zenfs.com/en/moneywise_327/b2a33375a54f8a69a5372074237b37af.jpg",
+    "symbols": [
+     "MSFT"
+    ],
+    "entities": [
+     {
+      "code": "MSFT",
+      "kind": "equity",
+      "name": "Microsoft Corporation",
+      "exchange": "NASDAQ",
+      "country": "USA",
+      "match": "tagged"
+     }
+    ],
+    "sectors": [
+     "InformationTechnology"
+    ],
+    "topic_id": "06945d83-e6ee-4ea3-bd36-fa3cfc36e7a2",
+    "topic_name": "Microsoft accused of firing 6,000 Americans for foreign indentured servants",
+    "theme_id": "88994f65-d9b4-53f0-a481-e39a520884fa"
+   },
+   {
+    "id": "7ecfd826-1e32-5df0-9860-c661c750106b",
+    "statement": "The US government will not process any new or pending Permanent Labor Certification Program (PERM) applications from Microsoft or seven other companies.",
+    "published_at": "2026-10-09T17:17:50Z",
+    "indexed_at": "2026-10-09T19:49:34.318963Z",
+    "sentiment": "bearish",
+    "importance": "medium",
+    "source_type": "reddit",
+    "source_url": "https://www.reddit.com/r/stocks/comments/1x1r6oj/microsoft_stock_after_green_card_news/",
+    "source_domain": "reddit.com",
+    "article_title": "Microsoft stock after green card news?",
+    "image_url": null,
+    "symbols": [
+     "MSFT"
+    ],
+    "entities": [
+     {
+      "code": "MSFT",
+      "kind": "equity",
+      "name": "Microsoft Corporation",
+      "exchange": "NASDAQ",
+      "country": "USA",
+      "match": "tagged"
+     }
+    ],
+    "sectors": [
+     "InformationTechnology"
+    ],
+    "topic_id": "1a3ec9e0-73bb-49fc-bebd-abe795b08ec6",
+    "topic_name": "U.S. Labor Secretary suspends Microsoft, Adobe, Cognizant, Infosys, Tata Consultancy Services, Wipro, HCL Technologies, and Capgemini from PERM",
+    "theme_id": "88994f65-d9b4-53f0-a481-e39a520884fa"
+   }
+  ],
+  "statements_cursor": "WzE3OTE1MTE1NzksIjkyMDU1ZjQ0LTY4MGYtNWI0YS05ZTU4LTQ0YjU1ZGRhNDRiMSJd"
+ },
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

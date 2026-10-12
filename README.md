@@ -2,10 +2,11 @@
 
 <!-- mcp-name: io.github.SlothyAfk/finance-pulse -->
 
-Financial news as structured, sourced data. [Finance Pulse](https://fintopic.news/docs) reads financial news as it
-is published and turns every article into **statements**: one-sentence facts with sentiment, importance, tickers,
-sector, source and publication time. Statements about the same development are clustered into **topics**, and
-topics into 19 **themes**. [fintopic.news](https://fintopic.news/) is a front page built on the same API.
+Financial news as structured, sourced data. [Finance Pulse](https://fintopic.news/docs) gives you financial news
+as **statements**: one-sentence facts from each article, with sentiment, importance, tickers, sector, source,
+headline and publication time. Statements about the same development are grouped into **topics**;
+one company's topics that continue each other form a **storyline**; and topics belong to standing **themes**.
+[fintopic.news](https://fintopic.news/) is a front page built on the same API.
 
 The same setup guide, with the other guides and the API reference, is on the docs site:
 [Use Finance Pulse from Claude, Cursor or Python](https://fintopic.news/docs/use-with-claude-and-python).
@@ -58,8 +59,9 @@ If the server does not start in Claude Desktop, it usually cannot find `uvx`: pu
 
 Then ask things like:
 
-- "What is the news saying about Nvidia today? Only the key facts, with sources."
+- "What is going on with Nvidia? Give me the picture, then the key facts with sources."
 - "Which tickers are suddenly getting more coverage than yesterday?"
+- "What are the ongoing stories about Microsoft, and how did the biggest one unfold?"
 - "What are the top developing stories in Energy, and how did the biggest one grow?"
 - "Show me Tesla's daily news sentiment for the last two weeks."
 
@@ -67,16 +69,20 @@ Then ask things like:
 
 | Tool | What it does |
 |---|---|
-| `search_statements` | Statements by symbol, sector, theme, topic, sentiment, minimum importance and time range |
-| `trending` | The developments most outlets are reporting now, or per 2-hour slot over 7 days |
-| `find_topics` | Developments for a symbol, sector or theme, by velocity, size or recency |
-| `get_topic` | One development: counts, its mix of news, analysis and reddit statements, newest statements with their outlets |
+| `get_symbol` | Everything about one company or other entity in one call: counts and sentiment per period, largest topics, storylines, related entities, newest statements |
+| `find_symbol` | A company's code from its name ("micron" finds `MU`) |
+| `search_statements` | Statements by symbol, sector, theme, topic, storyline, sentiment, minimum importance and time range |
+| `trending` | The developments most outlets are reporting right now, or the top of each recent time slot |
+| `find_topics` | Developments for a symbol, sector, theme or storyline, by velocity, size or recency |
+| `get_topic` | One development: counts, its mix of news, analysis and reddit statements, its storylines, newest statements with their outlets |
+| `storylines` | One company's news grouped into continuing stories: an event, then its follow-ups and reactions |
+| `get_storyline` | One storyline: its topics in order and its newest statements |
 | `sentiment_series` | Daily or hourly news volume and sentiment for a symbol, sector, theme or topic |
-| `screen` | Symbols (optionally only equities and ETFs) or sectors ranked by news attention and its change against the previous period |
+| `screen` | Symbols (optionally only equities and ETFs) or sectors ranked by news attention and its change, for the last day, week or any interval |
 | `themes` | The standing subjects with their volume and sentiment, optionally only those a symbol or sector appears in |
-| `reference` | The data window, known data incidents, theme ids and accepted filter values |
+| `reference` | What the API holds: the data window, counts, theme ids and accepted filter values |
 
-Each tool call is one API request. Results are trimmed and default to small pages.
+Each tool call is normally one API request. Results are trimmed and come in small pages.
 
 ## Use it from Python
 
@@ -98,6 +104,16 @@ fp = FinancePulse()          # or FinancePulse("YOUR_RAPIDAPI_KEY")
 for s in fp.statements(symbol="NVDA", importance_min="high", limit=5)["data"]:
     print(s["published_at"][:16], s["sentiment"], s["statement"], f"({s['source_domain']})")
 
+# One company in one call: counts per period, largest topics, storylines, newest statements
+nvda = fp.symbol("NVDA")["data"]
+week = nvda["periods"].get("w")           # a period without mentions is left out
+if week:
+    print(nvda["name"], week["mentions"], "mentions this week, score", week["score"])
+
+# A company's news as continuing stories
+for line in fp.storylines(symbol="MSFT", min_topics=2, sort="mentions", limit=5)["data"]:
+    print(line["topics"], "topics,", line["mentions"], "mentions:", line["name"])
+
 # Which tickers are suddenly in the news (kind= leaves out rates, central banks, countries, ...)
 for row in fp.symbols(period="d", sort="change", kind=["equity", "etf"], limit=10)["data"]:
     print(row["id"], row["mentions"], row["change"])
@@ -112,24 +128,27 @@ for t in fp.trending(kind="live")["data"][:10]:
     print(t["sources"], "sources:", t["name"])
 ```
 
-Every method returns the API's JSON unchanged: `{"data": ..., "next_cursor": ..., "snapshot": {...}}`. The
-`snapshot` block says how fresh the data is.
+Every method returns the API's JSON unchanged: `{"data": ..., "next_cursor": ..., "snapshot": {...}}`
+(`iter_statements` and `poll_feed` yield its rows one by one). The
+`snapshot` block carries the times the data refers to (`window_start`, `anchor`, `lag_days`), and every statement
+carries `published_at` and `indexed_at`.
 
 ### Follow the news without missing anything
 
 `poll_feed` yields every new statement in the order it entered the API and keeps its position in a file, so it
 survives restarts: after a crash nothing is skipped and only the statement you were working on is delivered
-again. The first run, with no saved position, starts 24 hours back, and the position is first stored once that
-first page has been handled. After a long pause the poller reads the whole backlog since its saved position, one
-request per 100 statements; delete the cursor file to start 24 hours back instead.
+again. The first run, with no saved position, starts at the feed's default starting point (a limited time back,
+not the beginning of the data), and the position is first stored once that first page has been handled. After a
+long pause the poller reads the whole backlog since its saved position, one request per 100 statements; delete
+the cursor file to start afresh instead.
 
 ```python
 for s in fp.poll_feed(sector="Energy", importance_min="high", cursor_file="energy.cursor.json"):
     print(s["indexed_at"], s["statement"], s["source_url"])
 ```
 
-The API builds new data about every 2.5 minutes, so the poller waits 150 seconds between polls by default. Timeouts and server errors are retried; a used-up quota (429)
-is raised.
+The poller pauses 150 seconds between polls unless you pass `interval=`; every poll is one request. Timeouts and
+server errors are retried; a used-up quota (429) is raised.
 
 ### More than one page
 
@@ -138,7 +157,7 @@ rows = list(fp.iter_statements(symbol=["NVDA", "AMD"], importance_min="medium", 
 ```
 
 Each page of 100 is one request. Without `max_items` it stops after 500 rows; `max_items=None` reads to the end
-of the window.
+of the data.
 
 ### Errors
 
@@ -149,7 +168,7 @@ try:
     fp.statements(symbol="S&P")
 except FinancePulseError as e:
     print(e.status, e.title, e.detail, e.param)
-    # 400 | Invalid symbol | 'S&P' is not a ticker | symbol
+    # 400 Invalid symbol 'S&P' is not a ticker symbol
 ```
 
 A `429` means the plan's request quota or rate limit is used up. Timeouts and network failures are raised as
@@ -162,24 +181,29 @@ A `429` means the plan's request quota or rate limit is used up. Timeouts and ne
 | `statements`, `iter_statements`, `statement` | `/v2/statements`, `/v2/statements/{id}` |
 | `feed`, `poll_feed` | `/v2/feed` |
 | `series` | `/v2/series` |
-| `symbols`, `sectors` | `/v2/symbols`, `/v2/sectors` |
+| `symbols`, `symbol`, `sectors` | `/v2/symbols`, `/v2/symbols/{code}`, `/v2/sectors` |
 | `trending` | `/v2/trending` |
 | `topics`, `topic` | `/v2/topics`, `/v2/topics/{id}` |
+| `storylines`, `storyline` | `/v2/storylines`, `/v2/storylines/{id}` |
 | `themes`, `theme` | `/v2/themes`, `/v2/themes/{id}` |
 | `meta` | `/v2/meta` |
 
-The package targets Finance Pulse API 2.0 (the `/v2` endpoints). Parameters and response fields are documented in
-the [API reference](https://fintopic.news/docs/reference), and the
-[guides](https://fintopic.news/docs) show complete worked examples.
+Parameters, response fields and limits are documented in the
+[API reference](https://fintopic.news/docs/reference), and the [guides](https://fintopic.news/docs) show complete
+worked examples. `fp.get("/v2/...", **params)` calls any endpoint the client has no method for yet.
 
 ## What the data is, and is not
 
 - **Symbols are canonical entity codes with a kind.** Equities and ETFs appear under their ticker (`NVDA`,
-  `0700.HK`); indices, rates, FX, crypto, commodities and organisations under short codes (`SPX`, `US10Y`, `USD`,
-  `BTC`, `GOLD`, `FED`). Use `kind=["equity", "etf"]` for tradable tickers only.
+  `0700.HK`); indices, rates, currencies, crypto, commodities and organisations under short codes (`SPX`, `USD`,
+  `BTC`, `FED`). Use `kind=["equity", "etf"]` for tradable tickers only, and
+  `symbols(q="name", period="window")` to find a code.
 - **Sentiment describes the statement**, not a price forecast. A symbol's sentiment is the count of its
   statements' labels.
-- **The window is a rolling 62 days.** `meta()` lists known outages and delays under `incidents`.
+- **Topics and storylines are grouped automatically** and can be wrong or incomplete: a reading aid, not a count
+  of events.
+- **The data is a rolling window of recent news.** `meta()` says how far back it goes (`window_start`,
+  `window_days`) and how much it holds.
 
 See [the docs](https://fintopic.news/docs) for the full list of caveats.
 

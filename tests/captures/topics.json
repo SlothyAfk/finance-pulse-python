@@ -1,0 +1,126 @@
+{
+ "data": [
+  {
+   "id": "7881ff4d-5d5e-4df9-a25e-babfa62798d0",
+   "name": "Nobel Prize in Economics 2026 awarded to Robert E. Hall and Michael Woodford",
+   "theme_id": "ccee1eb4-9b18-5f05-bc5c-503b6f78ead9",
+   "created_at": "2026-10-12T09:55:55Z",
+   "updated_at": "2026-10-12T12:05:00Z",
+   "statements": 43,
+   "total_statements": 43,
+   "sources": 36,
+   "statements_24h": 43,
+   "statements_4h": 42,
+   "sentiment": {
+    "bullish": 0,
+    "bearish": 0,
+    "neutral": 43
+   },
+   "sentiment_score": 0.0,
+   "symbols": [],
+   "entities": [],
+   "sectors": [
+    "Energy",
+    "Financials"
+   ],
+   "latest_statement": {
+    "id": "87d25bc4-33bf-56e2-a24d-1ad3a8ed9ef6",
+    "statement": "Robert Hall and Michael Woodford won the Nobel Prize in Economics in 2026 for their microeconomic models explaining the economic impact of household and corporate decisions.",
+    "published_at": "2026-10-12T12:05:00Z",
+    "sentiment": "neutral",
+    "source_url": "https://www.ambito.com/economia/robert-hall-y-michael-woodford-ganaron-el-nobel-2026-cuales-fueron-sus-principales-aportes-n6332669",
+    "source_domain": "ambito.com",
+    "article_title": "Robert Hall y Michael Woodford ganaron el Nobel de Econom\u00eda 2026: cu\u00e1les fueron sus principales aportes",
+    "image_url": "https://media.ambito.com/p/c2df5addab2bf7121c2743e6d34a28f5/adjuntos/239/imagenes/043/698/0043698251/1200x675/smart/image-37.png"
+   },
+   "statements_7d": 43,
+   "revision": "58248344cbce5ace239c54e900738f8f5300a0828959b8e5edcf62b720963b72",
+   "storylines": []
+  },
+  {
+   "id": "f800402e-d11a-46d1-b38a-42ada364531e",
+   "name": "Trump announces immediate energy ceasefire between Russia and Ukraine",
+   "theme_id": "cc3bc32c-77c4-55b2-8ada-1c050f77b7eb",
+   "created_at": "2026-05-08T19:07:42Z",
+   "updated_at": "2026-10-12T11:30:00Z",
+   "statements": 27,
+   "total_statements": 33,
+   "sources": 23,
+   "statements_24h": 27,
+   "statements_4h": 2,
+   "sentiment": {
+    "bullish": 2,
+    "bearish": 1,
+    "neutral": 24
+   },
+   "sentiment_score": 0.037,
+   "symbols": [],
+   "entities": [],
+   "sectors": [
+    "Energy"
+   ],
+   "latest_statement": {
+    "id": "3aa7517d-9401-593f-94d4-a3e81a5c53a6",
+    "statement": "U.S. President Trump announced an energy ceasefire between Russia and Ukraine.",
+    "published_at": "2026-10-12T11:30:00Z",
+    "sentiment": "neutral",
+    "source_url": "https://oilprice.com/Latest-Energy-News/World-News/Oil-Stuck-Between-Middle-East-Escalation-and-Russia-Ukraine-Energy-Truce.html",
+    "source_domain": "oilprice.com",
+    "article_title": "Oil Stuck Between Middle East Escalation and Russia-Ukraine Energy Truce",
+    "image_url": null
+   },
+   "statements_7d": 27,
+   "revision": "d17d97c8c9a06812c8614c35ff8afc7d2e804aaaffd2296ec8fbe666c8aecc95",
+   "storylines": []
+  },
+  {
+   "id": "49e99885-78d9-4ae5-bad0-4fef8b766cfa",
+   "name": "Saudi-led coalition vows response to Houthi attack on King Khalid International Airport",
+   "theme_id": "e363458d-63bf-503c-82a4-b5391d57e2c7",
+   "created_at": "2026-09-20T11:37:00Z",
+   "updated_at": "2026-10-12T13:20:00Z",
+   "statements": 83,
+   "total_statements": 83,
+   "sources": 32,
+   "statements_24h": 20,
+   "statements_4h": 3,
+   "sentiment": {
+    "bullish": 0,
+    "bearish": 38,
+    "neutral": 45
+   },
+   "sentiment_score": -0.4578,
+   "symbols": [],
+   "entities": [],
+   "sectors": [
+    "Energy",
+    "Industrials",
+    "Utilities",
+    "RealEstate",
+    "Materials",
+    "ConsumerDiscretionary",
+    "Financials"
+   ],
+   "latest_statement": {
+    "id": "efb6cf85-c9ac-5a88-920f-56811ef11711",
+    "statement": "Saudi Arabia's King Khalid International Airport closure has been extended in an unprecedented move by aviation authorities.",
+    "published_at": "2026-10-12T13:20:00Z",
+    "sentiment": "neutral",
+    "source_url": "https://www.zerohedge.com/energy/riyadh-airport-closure-extended-saudi-arabia-projects-normalcy-hosting-world-petroleum",
+    "source_domain": "zerohedge.com",
+    "article_title": "Riyadh Airport Closure Extended As Saudi Arabia Projects 'Normalcy', Hosting World Petroleum Congress",
+    "image_url": null
+   },
+   "statements_7d": 80,
+   "revision": "d6f46e523f2b41bbd48b4b9f060259f9f51d1cbb1bd389457335650cbe29bd6b",
+   "storylines": []
+  }
+ ],
+ "next_cursor": "WzgsIjQ2MjMzNmVkLWExNzUtNDY4Yy1iNmM5LTE3NTQyOTYzMzk3MCJd",
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

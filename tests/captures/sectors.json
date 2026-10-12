@@ -1,0 +1,73 @@
+{
+ "data": [
+  {
+   "id": "Financials",
+   "kind": null,
+   "name": null,
+   "mentions": 937,
+   "topics": 771,
+   "sources": 135,
+   "bullish": 181,
+   "bearish": 275,
+   "neutral": 481,
+   "score": -0.1003,
+   "mentions_prev_period": 311,
+   "change": 626,
+   "last_seen": "2026-10-12T13:25:00Z",
+   "mentions_single": null,
+   "bullish_single": null,
+   "bearish_single": null,
+   "neutral_single": null,
+   "score_single": null
+  },
+  {
+   "id": "InformationTechnology",
+   "kind": null,
+   "name": null,
+   "mentions": 934,
+   "topics": 702,
+   "sources": 122,
+   "bullish": 352,
+   "bearish": 134,
+   "neutral": 448,
+   "score": 0.2334,
+   "mentions_prev_period": 387,
+   "change": 547,
+   "last_seen": "2026-10-12T13:07:38Z",
+   "mentions_single": null,
+   "bullish_single": null,
+   "bearish_single": null,
+   "neutral_single": null,
+   "score_single": null
+  },
+  {
+   "id": "Energy",
+   "kind": null,
+   "name": null,
+   "mentions": 526,
+   "topics": 414,
+   "sources": 136,
+   "bullish": 81,
+   "bearish": 149,
+   "neutral": 296,
+   "score": -0.1293,
+   "mentions_prev_period": 157,
+   "change": 369,
+   "last_seen": "2026-10-12T13:29:09Z",
+   "mentions_single": null,
+   "bullish_single": null,
+   "bearish_single": null,
+   "neutral_single": null,
+   "score_single": null
+  }
+ ],
+ "period": "d",
+ "since": null,
+ "until": null,
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

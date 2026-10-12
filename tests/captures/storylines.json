@@ -1,0 +1,266 @@
+{
+ "data": [
+  {
+   "id": "0bc4b015-8f76-52f1-94d6-f1150a6d635f",
+   "symbol": "MSFT",
+   "entity": {
+    "code": "MSFT",
+    "kind": "equity",
+    "name": "Microsoft Corporation",
+    "exchange": "NASDAQ",
+    "country": "USA",
+    "match": null
+   },
+   "name": "US government suspends Microsoft and Adobe from green card program",
+   "name_topic_id": "a8e52831-abe3-403f-97aa-912527d713be",
+   "first_seen": "2026-10-08T15:23:50Z",
+   "last_seen": "2026-10-10T14:22:23Z",
+   "topics": 9,
+   "statements": 53,
+   "mentions": 48,
+   "sources": 41,
+   "mentions_24h": 0,
+   "mentions_7d": 48,
+   "bullish": 0,
+   "bearish": 37,
+   "neutral": 11,
+   "top_members": [
+    {
+     "id": "a8e52831-abe3-403f-97aa-912527d713be",
+     "name": "US government suspends Microsoft and Adobe from green card program",
+     "statements": 25,
+     "mentions": 24,
+     "created_at": "2026-10-08T15:24:25Z",
+     "updated_at": "2026-10-10T14:22:23Z",
+     "placed_at": null
+    },
+    {
+     "id": "ab9c8075-582e-4012-8c5c-074a920f7507",
+     "name": "US bans Microsoft from sponsoring foreign workers",
+     "statements": 7,
+     "mentions": 7,
+     "created_at": "2026-10-08T17:06:45Z",
+     "updated_at": "2026-10-09T13:14:33Z",
+     "placed_at": null
+    },
+    {
+     "id": "65d2a641-1802-4460-9278-dc88e481a459",
+     "name": "Microsoft accused of fraud by JD Vance",
+     "statements": 5,
+     "mentions": 5,
+     "created_at": "2026-10-08T15:26:32Z",
+     "updated_at": "2026-10-09T02:21:35Z",
+     "placed_at": null
+    },
+    {
+     "id": "06945d83-e6ee-4ea3-bd36-fa3cfc36e7a2",
+     "name": "Microsoft accused of firing 6,000 Americans for foreign indentured servants",
+     "statements": 3,
+     "mentions": 3,
+     "created_at": "2026-10-08T20:13:52Z",
+     "updated_at": "2026-10-09T21:45:00Z",
+     "placed_at": null
+    },
+    {
+     "id": "01499671-b458-4474-91da-ee96987712be",
+     "name": "US immigration crackdown targets Microsoft and tech firms",
+     "statements": 4,
+     "mentions": 3,
+     "created_at": "2026-10-08T21:20:34Z",
+     "updated_at": "2026-10-09T09:00:27Z",
+     "placed_at": null
+    }
+   ],
+   "related": [
+    {
+     "id": "21d58ec1-6011-5af1-acff-90062c4b7abc",
+     "symbol": "ADBE",
+     "name": "US government suspends Microsoft and Adobe from green card program",
+     "topics": 2,
+     "shared_topics": 2
+    },
+    {
+     "id": "55aaa831-f08b-5a0d-8655-f88a27186c67",
+     "symbol": "WIPRO.NS",
+     "name": "U.S. Labor Secretary suspends Microsoft, Adobe, Cognizant, Infosys, Tata Consultancy Services, Wipro, HCL Technologies, and Capgemini from PERM",
+     "topics": 1,
+     "shared_topics": 1
+    },
+    {
+     "id": "618a295a-91a6-5c05-a38a-ea26372b3f1b",
+     "symbol": "INFY",
+     "name": "US suspends PERM for Indian IT majors",
+     "topics": 3,
+     "shared_topics": 1
+    },
+    {
+     "id": "6e1f6e8e-41e4-5b60-b073-e47d9a26fe36",
+     "symbol": "TCS.NS",
+     "name": "U.S. Labor Secretary suspends Microsoft, Adobe, Cognizant, Infosys, Tata Consultancy Services, Wipro, HCL Technologies, and Capgemini from PERM",
+     "topics": 1,
+     "shared_topics": 1
+    }
+   ]
+  },
+  {
+   "id": "3d6b2eef-9c07-546b-ab63-742c53ee278e",
+   "symbol": "MSFT",
+   "entity": {
+    "code": "MSFT",
+    "kind": "equity",
+    "name": "Microsoft Corporation",
+    "exchange": "NASDAQ",
+    "country": "USA",
+    "match": null
+   },
+   "name": "Microsoft Azure revenue crosses $100 billion annual pace",
+   "name_topic_id": "2abe4c1c-32a9-4771-a9a2-84168ff717e6",
+   "first_seen": "2026-08-11T14:37:52Z",
+   "last_seen": "2026-10-12T06:20:00Z",
+   "topics": 4,
+   "statements": 22,
+   "mentions": 22,
+   "sources": 6,
+   "mentions_24h": 2,
+   "mentions_7d": 8,
+   "bullish": 20,
+   "bearish": 0,
+   "neutral": 2,
+   "top_members": [
+    {
+     "id": "2abe4c1c-32a9-4771-a9a2-84168ff717e6",
+     "name": "Microsoft Azure revenue crosses $100 billion annual pace",
+     "statements": 15,
+     "mentions": 15,
+     "created_at": "2026-05-06T11:30:42Z",
+     "updated_at": "2026-10-12T00:43:03Z",
+     "placed_at": null
+    },
+    {
+     "id": "af8e2236-267c-4b09-baf2-e24b821333ce",
+     "name": "Microsoft stock rallies on Azure growth",
+     "statements": 5,
+     "mentions": 5,
+     "created_at": "2026-07-30T11:36:42Z",
+     "updated_at": "2026-10-02T08:46:16Z",
+     "placed_at": null
+    },
+    {
+     "id": "1bdb2b9b-5bc8-4089-9215-f279bef1adcb",
+     "name": "Azure's cloud demand continues to outpace capacity.",
+     "statements": 1,
+     "mentions": 1,
+     "created_at": "2026-10-12T06:20:00Z",
+     "updated_at": "2026-10-12T06:20:00Z",
+     "placed_at": "2026-10-12T07:25:00.956646Z"
+    },
+    {
+     "id": "f1e6b67d-3b1e-4547-810c-4d9bbe2d220f",
+     "name": "Microsoft investing $100 billion in data centers",
+     "statements": 1,
+     "mentions": 1,
+     "created_at": "2026-05-11T13:38:47Z",
+     "updated_at": "2026-08-11T14:37:52Z",
+     "placed_at": null
+    }
+   ],
+   "related": [
+    {
+     "id": "d310654a-88f8-52f9-8f23-ddfa73152acf",
+     "symbol": "AMZN",
+     "name": "Senators target tech giants over AI data center energy use",
+     "topics": 2,
+     "shared_topics": 1
+    }
+   ]
+  },
+  {
+   "id": "0ebd4f05-7dbf-5283-a85d-ee11bc3bda50",
+   "symbol": "MSFT",
+   "entity": {
+    "code": "MSFT",
+    "kind": "equity",
+    "name": "Microsoft Corporation",
+    "exchange": "NASDAQ",
+    "country": "USA",
+    "match": null
+   },
+   "name": "Microsoft CEO urges emergency brake on advanced AI",
+   "name_topic_id": "dbaac6d4-686f-4d31-855a-b9d00e97d33b",
+   "first_seen": "2026-10-10T18:35:59Z",
+   "last_seen": "2026-10-12T13:07:38Z",
+   "topics": 7,
+   "statements": 22,
+   "mentions": 21,
+   "sources": 20,
+   "mentions_24h": 10,
+   "mentions_7d": 21,
+   "bullish": 0,
+   "bearish": 1,
+   "neutral": 20,
+   "top_members": [
+    {
+     "id": "dbaac6d4-686f-4d31-855a-b9d00e97d33b",
+     "name": "Microsoft CEO urges emergency brake on advanced AI",
+     "statements": 9,
+     "mentions": 9,
+     "created_at": "2026-10-10T18:35:59Z",
+     "updated_at": "2026-10-11T23:33:19Z",
+     "placed_at": null
+    },
+    {
+     "id": "ec242f24-caae-4049-b57d-05f7249030f4",
+     "name": "Microsoft warns AI faces fewer safety requirements than milk",
+     "statements": 6,
+     "mentions": 5,
+     "created_at": "2026-10-12T07:52:46Z",
+     "updated_at": "2026-10-12T13:07:38Z",
+     "placed_at": "2026-10-12T09:55:48.392069Z"
+    },
+    {
+     "id": "31497408-d4da-426b-aa7c-d31d4e80aca6",
+     "name": "TikTok and Microsoft warn about runaway AI hype",
+     "statements": 2,
+     "mentions": 2,
+     "created_at": "2026-10-12T06:47:00Z",
+     "updated_at": "2026-10-12T06:47:00Z",
+     "placed_at": "2026-10-12T07:44:45.509711Z"
+    },
+    {
+     "id": "83842129-448f-48cc-b573-9846a608a72b",
+     "name": "Microsoft CEO Nadella warns AI models are compromised",
+     "statements": 2,
+     "mentions": 2,
+     "created_at": "2026-10-10T21:05:46Z",
+     "updated_at": "2026-10-10T22:10:17Z",
+     "placed_at": null
+    },
+    {
+     "id": "96505729-9307-48a3-825d-96ca754bf4a9",
+     "name": "Microsoft president states that AI advancement requires stricter supervision mechanisms",
+     "statements": 1,
+     "mentions": 1,
+     "created_at": "2026-10-12T12:34:55Z",
+     "updated_at": "2026-10-12T12:34:55Z",
+     "placed_at": "2026-10-12T12:42:04.090585Z"
+    }
+   ],
+   "related": [
+    {
+     "id": "810f6b27-60b8-5ca3-a2d9-0826f41affe5",
+     "symbol": "BYTEDANCE",
+     "name": "TikTok and Microsoft warn about runaway AI hype",
+     "topics": 1,
+     "shared_topics": 1
+    }
+   ]
+  }
+ ],
+ "next_cursor": "WyJtZW50aW9ucyIsMTEsImUyMmM5OTE0LWY1OTEtNWFjZS1iY2UyLTZkODExYmYxNzRkZCJd",
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

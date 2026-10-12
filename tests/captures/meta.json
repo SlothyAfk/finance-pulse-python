@@ -1,0 +1,164 @@
+{
+ "data": {
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "lag_days": "0.00",
+  "newest_statement": "2026-10-12T13:29:09+00:00",
+  "sources_7d": 303,
+  "statements": 109517,
+  "statements_7d": 46235,
+  "storyline_method": 1,
+  "storylines": 18939,
+  "storylines_live_since": "2026-10-11T17:04:10.592313+00:00",
+  "storylines_multi_topic": 3361,
+  "symbols_d": 352,
+  "symbols_w": 1827,
+  "symbols_w_10_mentions": 193,
+  "symbols_w_3_sources": 426,
+  "symbols_window": 3838,
+  "themes": 22,
+  "topics": 62832,
+  "topics_7d": 30198,
+  "window_days": 62,
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "enums": {
+   "sentiment": [
+    "bullish",
+    "bearish",
+    "neutral"
+   ],
+   "importance": [
+    "low",
+    "medium",
+    "high",
+    "ultra"
+   ],
+   "source_type": [
+    "news",
+    "speculative",
+    "reddit"
+   ],
+   "sector": [
+    "CommunicationServices",
+    "ConsumerDiscretionary",
+    "ConsumerStaples",
+    "Energy",
+    "Financials",
+    "HealthCare",
+    "Industrials",
+    "InformationTechnology",
+    "Materials",
+    "RealEstate",
+    "Utilities"
+   ],
+   "entity_kind": [
+    "equity",
+    "etf",
+    "index",
+    "rate",
+    "fx",
+    "crypto",
+    "commodity",
+    "org",
+    "private",
+    "country"
+   ],
+   "themes": [
+    {
+     "id": "7059ad1e-8ecb-52cc-99fd-c8457a534fda",
+     "name": "Companies & earnings"
+    },
+    {
+     "id": "c758f392-2a2d-56bb-9ab5-90913bce34d3",
+     "name": "Markets"
+    },
+    {
+     "id": "a649bcf3-ff7a-592c-b4d3-b32a369fd55c",
+     "name": "Tech & AI"
+    },
+    {
+     "id": "88994f65-d9b4-53f0-a481-e39a520884fa",
+     "name": "Politics & regulation"
+    },
+    {
+     "id": "5f0acf48-3fd8-56ec-9199-07fdeb202d4d",
+     "name": "Deals & M&A"
+    },
+    {
+     "id": "f0299fb7-2624-5e4d-b456-7a518b8b2569",
+     "name": "Energy"
+    },
+    {
+     "id": "2f496e28-5742-517d-9805-c28ed1cc9135",
+     "name": "Economy"
+    },
+    {
+     "id": "60b142bf-2ba2-5a00-beaf-d1d3b2bdc341",
+     "name": "Autos & transport"
+    },
+    {
+     "id": "5a8412ff-78e7-5fa0-ad5b-7b63de604642",
+     "name": "Crypto"
+    },
+    {
+     "id": "976f9af4-2984-5329-b003-62f76c692009",
+     "name": "Consumer & retail"
+    },
+    {
+     "id": "ab6cd68e-2b92-5aa9-a9d9-ceb9e4a540e0",
+     "name": "Funds & asset management"
+    },
+    {
+     "id": "c456aff2-f60e-59f5-b988-f624f095bd7c",
+     "name": "Credit & debt"
+    },
+    {
+     "id": "cc3bc32c-77c4-55b2-8ada-1c050f77b7eb",
+     "name": "Geopolitics & trade"
+    },
+    {
+     "id": "e363458d-63bf-503c-82a4-b5391d57e2c7",
+     "name": "World news"
+    },
+    {
+     "id": "b9bbcaf0-214c-5bf7-8471-d35cd285781a",
+     "name": "Central banks & rates"
+    },
+    {
+     "id": "f9f5aae8-cd87-5884-84e0-1e1febe6e927",
+     "name": "Metals & mining"
+    },
+    {
+     "id": "ff2a7eca-35b6-562d-8fef-6c90612702a3",
+     "name": "Aerospace & defense"
+    },
+    {
+     "id": "90b026fa-6647-5535-90ec-5671208671e4",
+     "name": "Real estate"
+    },
+    {
+     "id": "e0c9ec17-ae56-57d5-9b91-49eb7e9a9377",
+     "name": "Health & pharma"
+    },
+    {
+     "id": "b60075a6-58a7-5af3-9bcb-420f777ce7be",
+     "name": "Agriculture & food commodities"
+    },
+    {
+     "id": "36d57198-eae4-5477-95b9-48d915fbe0ed",
+     "name": "Media & entertainment"
+    },
+    {
+     "id": "ccee1eb4-9b18-5f05-bc5c-503b6f78ead9",
+     "name": "Science & research"
+    }
+   ]
+  }
+ },
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

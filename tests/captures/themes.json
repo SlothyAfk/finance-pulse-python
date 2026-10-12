@@ -1,0 +1,325 @@
+{
+ "data": [
+  {
+   "id": "7059ad1e-8ecb-52cc-99fd-c8457a534fda",
+   "name": "Companies & earnings",
+   "created_at": "2026-05-04T13:38:42Z",
+   "updated_at": "2026-10-12T13:15:27Z",
+   "topics": 10593,
+   "statements": 18282,
+   "total_topics": 23259,
+   "total_statements": 59450,
+   "sources": 287,
+   "statements_24h": 796,
+   "statements_4h": 224,
+   "sentiment": {
+    "bullish": 8504,
+    "bearish": 3670,
+    "neutral": 6108
+   },
+   "sentiment_score": 0.2644,
+   "symbols": [
+    "MU",
+    "NKE",
+    "NVDA",
+    "005930.KS",
+    "AMZN",
+    "BRK-B",
+    "TSM",
+    "PEP"
+   ],
+   "entities": [
+    {
+     "code": "MU",
+     "kind": "equity",
+     "name": "Micron Technology Inc",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "NKE",
+     "kind": "equity",
+     "name": "Nike Inc",
+     "exchange": "NYSE",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "NVDA",
+     "kind": "equity",
+     "name": "NVIDIA Corporation",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "005930.KS",
+     "kind": "equity",
+     "name": "Samsung Electronics Co Ltd",
+     "exchange": "KO",
+     "country": "Korea",
+     "match": null
+    },
+    {
+     "code": "AMZN",
+     "kind": "equity",
+     "name": "Amazon.com Inc",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "BRK-B",
+     "kind": "equity",
+     "name": "Berkshire Hathaway Inc",
+     "exchange": "NYSE",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "TSM",
+     "kind": "equity",
+     "name": "Taiwan Semiconductor Manufacturing",
+     "exchange": "NYSE",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "PEP",
+     "kind": "equity",
+     "name": "PepsiCo Inc",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    }
+   ],
+   "sectors": [
+    "InformationTechnology",
+    "Financials",
+    "ConsumerDiscretionary",
+    "Industrials",
+    "HealthCare",
+    "Materials",
+    "CommunicationServices",
+    "Energy"
+   ]
+  },
+  {
+   "id": "c758f392-2a2d-56bb-9ab5-90913bce34d3",
+   "name": "Markets",
+   "created_at": "2026-05-04T13:35:42Z",
+   "updated_at": "2026-10-12T13:16:00Z",
+   "topics": 8215,
+   "statements": 14432,
+   "total_topics": 15997,
+   "total_statements": 38761,
+   "sources": 232,
+   "statements_24h": 698,
+   "statements_4h": 164,
+   "sentiment": {
+    "bullish": 5274,
+    "bearish": 6168,
+    "neutral": 2990
+   },
+   "sentiment_score": -0.0619,
+   "symbols": [
+    "USD",
+    "SPX",
+    "UST",
+    "IXIC",
+    "DJI",
+    "FED",
+    "NVDA",
+    "NIFTY50"
+   ],
+   "entities": [
+    {
+     "code": "USD",
+     "kind": "fx",
+     "name": "US dollar",
+     "exchange": null,
+     "country": null,
+     "match": null
+    },
+    {
+     "code": "SPX",
+     "kind": "index",
+     "name": "S&P 500",
+     "exchange": null,
+     "country": null,
+     "match": null
+    },
+    {
+     "code": "UST",
+     "kind": "rate",
+     "name": "US Treasuries",
+     "exchange": null,
+     "country": null,
+     "match": null
+    },
+    {
+     "code": "IXIC",
+     "kind": "index",
+     "name": "Nasdaq Composite",
+     "exchange": null,
+     "country": null,
+     "match": null
+    },
+    {
+     "code": "DJI",
+     "kind": "index",
+     "name": "Dow Jones Industrial Average",
+     "exchange": null,
+     "country": null,
+     "match": null
+    },
+    {
+     "code": "FED",
+     "kind": "org",
+     "name": "Federal Reserve",
+     "exchange": null,
+     "country": null,
+     "match": null
+    },
+    {
+     "code": "NVDA",
+     "kind": "equity",
+     "name": "NVIDIA Corporation",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "NIFTY50",
+     "kind": "index",
+     "name": "Nifty 50",
+     "exchange": null,
+     "country": null,
+     "match": null
+    }
+   ],
+   "sectors": [
+    "Financials",
+    "InformationTechnology",
+    "ConsumerDiscretionary",
+    "Energy",
+    "CommunicationServices",
+    "Industrials",
+    "HealthCare",
+    "Materials"
+   ]
+  },
+  {
+   "id": "a649bcf3-ff7a-592c-b4d3-b32a369fd55c",
+   "name": "Tech & AI",
+   "created_at": "2026-05-04T13:47:42Z",
+   "updated_at": "2026-10-12T13:19:08Z",
+   "topics": 6295,
+   "statements": 11207,
+   "total_topics": 12018,
+   "total_statements": 30074,
+   "sources": 279,
+   "statements_24h": 502,
+   "statements_4h": 173,
+   "sentiment": {
+    "bullish": 4960,
+    "bearish": 1614,
+    "neutral": 4633
+   },
+   "sentiment_score": 0.2986,
+   "symbols": [
+    "NVDA",
+    "OPENAI",
+    "META",
+    "GOOGL",
+    "AAPL",
+    "AMZN",
+    "MSFT",
+    "TSM"
+   ],
+   "entities": [
+    {
+     "code": "NVDA",
+     "kind": "equity",
+     "name": "NVIDIA Corporation",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "OPENAI",
+     "kind": "private",
+     "name": "OpenAI",
+     "exchange": null,
+     "country": null,
+     "match": null
+    },
+    {
+     "code": "META",
+     "kind": "equity",
+     "name": "Meta Platforms Inc.",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "GOOGL",
+     "kind": "equity",
+     "name": "Alphabet Inc Class A",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "AAPL",
+     "kind": "equity",
+     "name": "Apple Inc",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "AMZN",
+     "kind": "equity",
+     "name": "Amazon.com Inc",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "MSFT",
+     "kind": "equity",
+     "name": "Microsoft Corporation",
+     "exchange": "NASDAQ",
+     "country": "USA",
+     "match": null
+    },
+    {
+     "code": "TSM",
+     "kind": "equity",
+     "name": "Taiwan Semiconductor Manufacturing",
+     "exchange": "NYSE",
+     "country": "USA",
+     "match": null
+    }
+   ],
+   "sectors": [
+    "InformationTechnology",
+    "Financials",
+    "ConsumerDiscretionary",
+    "CommunicationServices",
+    "Industrials",
+    "Energy",
+    "HealthCare",
+    "Utilities"
+   ]
+  }
+ ],
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

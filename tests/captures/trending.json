@@ -1,0 +1,240 @@
+{
+ "data": [
+  {
+   "id": "f1544394-3f5a-4ce9-b3d9-76d6a6293c24",
+   "name": "IonQ acquires Elisity for up to $1.3 billion to expand cybersecurity",
+   "theme_id": "5f0acf48-3fd8-56ec-9199-07fdeb202d4d",
+   "created_at": "2026-10-12T11:00:00Z",
+   "updated_at": "2026-10-12T12:29:00Z",
+   "statements": 8,
+   "total_statements": 8,
+   "sources": 8,
+   "statements_24h": 8,
+   "statements_4h": 8,
+   "sentiment": {
+    "bullish": 8,
+    "bearish": 0,
+    "neutral": 0
+   },
+   "sentiment_score": 1.0,
+   "symbols": [],
+   "entities": [],
+   "sectors": [
+    "InformationTechnology"
+   ],
+   "latest_statement": {
+    "id": "123153be-fcf6-5d1b-b575-4b1059e1a592",
+    "statement": "IonQ is acquiring Elisity for a $1.3 billion all-stock deal",
+    "published_at": "2026-10-12T12:29:00Z",
+    "sentiment": "bullish",
+    "source_url": "https://breakingthenews.net/Article/IonQ-to-acquire-Elisity-in-dollar1.3B-deal/67277628",
+    "source_domain": "breakingthenews.net",
+    "article_title": "IonQ to acquire Elisity in $1.3B deal",
+    "image_url": null
+   },
+   "statements_7d": 8,
+   "revision": "4b5eb76adf02bc2a8436035e87454828d23047d17fa2ba696d48ec35be331acf",
+   "storylines": [],
+   "position": 1,
+   "trending": [
+    {
+     "kind": "live",
+     "slot_start": null,
+     "rank": 1,
+     "sources": 5,
+     "statements": 5
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-12T10:00:00+00:00",
+     "rank": 3,
+     "sources": 4,
+     "statements": 4
+    }
+   ]
+  },
+  {
+   "id": "08c45184-c0ee-45ff-b8cf-11ef5bc37ffe",
+   "name": "HCL Tech Q2 2026 profit rises 21% year over year",
+   "theme_id": "7059ad1e-8ecb-52cc-99fd-c8457a534fda",
+   "created_at": "2026-10-07T00:30:00Z",
+   "updated_at": "2026-10-12T12:59:32Z",
+   "statements": 10,
+   "total_statements": 10,
+   "sources": 3,
+   "statements_24h": 9,
+   "statements_4h": 5,
+   "sentiment": {
+    "bullish": 8,
+    "bearish": 0,
+    "neutral": 2
+   },
+   "sentiment_score": 0.8,
+   "symbols": [
+    "HCLTECH.NS"
+   ],
+   "entities": [
+    {
+     "code": "HCLTECH.NS",
+     "kind": "equity",
+     "name": "HCL Technologies Limited",
+     "exchange": "NSE",
+     "country": "India",
+     "match": null
+    }
+   ],
+   "sectors": [
+    "InformationTechnology"
+   ],
+   "latest_statement": {
+    "id": "6219d563-8be9-5d22-8571-5d745a1874ca",
+    "statement": "HCLTech added over 6,400 employees in the September quarter, its highest quarterly net addition in almost 4 years.",
+    "published_at": "2026-10-12T12:59:32Z",
+    "sentiment": "neutral",
+    "source_url": "https://www.cnbctv18.com/market/hcltech-adds-6136-freshers-in-q2-as-headcount-hits-all-time-high-20010128.htm",
+    "source_domain": "cnbctv18.com",
+    "article_title": "HCLTech adds 6,136 freshers in Q2 as headcount hits all-time high",
+    "image_url": "https://images.cnbctv18.com/uploads/2026/07/codex-micro-4-2026-07-9ff8c022893fb41eb3be6d240438d871.jpg"
+   },
+   "statements_7d": 10,
+   "revision": "2d22b24d6ef249d2757a269df1bc77a777a11333d89c72e207844c8e356ab41b",
+   "storylines": [
+    {
+     "id": "1a5b8f0c-49a0-5f98-bb38-6d7b85999f96",
+     "symbol": "HCLTECH.NS",
+     "topics": 2,
+     "placed_at": "2026-10-12T04:43:39.011657Z"
+    }
+   ],
+   "position": 2,
+   "trending": [
+    {
+     "kind": "live",
+     "slot_start": null,
+     "rank": 2,
+     "sources": 3,
+     "statements": 5
+    }
+   ]
+  },
+  {
+   "id": "dd037c59-9b49-4f03-8150-130d238c2813",
+   "name": "EU-China hybrid vehicle trade deal",
+   "theme_id": "cc3bc32c-77c4-55b2-8ada-1c050f77b7eb",
+   "created_at": "2026-10-07T04:00:34Z",
+   "updated_at": "2026-10-12T11:36:25Z",
+   "statements": 78,
+   "total_statements": 78,
+   "sources": 48,
+   "statements_24h": 14,
+   "statements_4h": 3,
+   "sentiment": {
+    "bullish": 2,
+    "bearish": 12,
+    "neutral": 64
+   },
+   "sentiment_score": -0.1282,
+   "symbols": [],
+   "entities": [],
+   "sectors": [
+    "Energy",
+    "ConsumerDiscretionary",
+    "CommunicationServices",
+    "Financials",
+    "Materials"
+   ],
+   "latest_statement": {
+    "id": "0073b35f-296a-5f1f-88ab-c69377ce792c",
+    "statement": "EU is considering trade initiatives following a China car import deal.",
+    "published_at": "2026-10-12T11:36:25Z",
+    "sentiment": "neutral",
+    "source_url": "https://www.investing.com/news/economy-news/eu-eyes-december-trade-initiatives-after-china-car-import-deal-4944130",
+    "source_domain": "investing.com",
+    "article_title": "EU eyes December trade initiatives after China car import deal",
+    "image_url": "https://content-media.investing.com/trkd-images/LYNXMPEM9B0XE_L.jpg"
+   },
+   "statements_7d": 78,
+   "revision": "87db95f8bc126480c51b0e2664ca450470e07b94f2ba64499e9e3c14e2ed881e",
+   "storylines": [],
+   "position": 3,
+   "trending": [
+    {
+     "kind": "live",
+     "slot_start": null,
+     "rank": 3,
+     "sources": 3,
+     "statements": 3
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-12T10:00:00+00:00",
+     "rank": 10,
+     "sources": 3,
+     "statements": 3
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-12T06:00:00+00:00",
+     "rank": 2,
+     "sources": 5,
+     "statements": 5
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-11T22:00:00+00:00",
+     "rank": 1,
+     "sources": 3,
+     "statements": 3
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-10T14:00:00+00:00",
+     "rank": 8,
+     "sources": 2,
+     "statements": 2
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-10T10:00:00+00:00",
+     "rank": 3,
+     "sources": 3,
+     "statements": 3
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-10T08:00:00+00:00",
+     "rank": 7,
+     "sources": 3,
+     "statements": 3
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-09T14:00:00+00:00",
+     "rank": 1,
+     "sources": 17,
+     "statements": 18
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-09T12:00:00+00:00",
+     "rank": 1,
+     "sources": 10,
+     "statements": 12
+    },
+    {
+     "kind": "slot",
+     "slot_start": "2026-10-07T08:00:00+00:00",
+     "rank": 5,
+     "sources": 4,
+     "statements": 5
+    }
+   ]
+  }
+ ],
+ "snapshot": {
+  "built_at": "2026-10-12T13:32:50.697556+00:00",
+  "anchor": "2026-10-12T13:32:50.697556+00:00",
+  "window_start": "2026-08-11T13:32:50.697556+00:00",
+  "lag_days": 0.0
+ }
+}

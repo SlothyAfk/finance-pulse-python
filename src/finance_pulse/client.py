@@ -1,7 +1,7 @@
-"""Client for the Finance Pulse API (version 2.0, the /v2 endpoints), served through RapidAPI.
+"""Client for the Finance Pulse API, served through RapidAPI.
 
 Every method returns the API's JSON as plain dicts, unchanged: {"data": ..., "next_cursor": ..., "snapshot": ...}.
-The API reference is at https://fintopic.news/docs/reference.
+Parameters, fields and limits are documented in the API reference: https://fintopic.news/docs/reference.
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ class Backend:
 RAPIDAPI = Backend(base_url="https://finance-pulse.p.rapidapi.com", key_header="X-RapidAPI-Key",
                    key_env="RAPIDAPI_KEY", signup_url=PRICING_URL,
                    extra_headers={"X-RapidAPI-Host": "finance-pulse.p.rapidapi.com"})
-BUILD_INTERVAL_SECONDS = 150      # the API builds a new snapshot about this often; polling faster returns the same data
+DEFAULT_POLL_SECONDS = 150        # poll_feed's pause between polls; a client default, change it with interval=
 
 Many = Union[str, Sequence[str], None]
 
@@ -71,7 +71,11 @@ def _many(value: Many) -> Optional[str]:
 
 
 def _segment(value: str) -> str:
-    return quote(str(value), safe="")
+    """An id as one path segment. Empty, "." and ".." would address another endpoint, so they are refused."""
+    value = str(value).strip()
+    if value in ("", ".", ".."):
+        raise ValueError(f"{value!r} is not an id")
+    return quote(value, safe="")
 
 
 class FinancePulse:
@@ -112,11 +116,17 @@ class FinancePulse:
         Raises FinancePulseError for every failure, including timeouts and network errors (status 0)."""
         if not path.startswith("/") or path.startswith("//"):
             raise ValueError("path must start with a single '/': the key is only ever sent to the API's own host")
+        if "?" in path or "#" in path:
+            raise ValueError("pass query parameters as keyword arguments, not in the path")
         query = {key: (str(value).lower() if isinstance(value, bool) else str(value))
                  for key, value in params.items() if value is not None}
         try:
-            response = self._http.get(path, params=query)
-            for _ in range(3):          # a merged theme answers 308 to its successor, on the same host
+            request = self._http.build_request("GET", path, params=query)
+        except httpx.InvalidURL as exc:
+            raise ValueError(f"not a valid path: {exc}") from exc
+        try:
+            response = self._http.send(request)
+            for _ in range(3):          # a retired id answers 308 to its successor, on the same host
                 if not response.has_redirect_location:
                     break
                 target = response.url.join(response.headers["location"])
@@ -124,7 +134,7 @@ class FinancePulse:
                     raise FinancePulseError(response.status_code, "Redirect to another origin refused",
                                             f"{target.scheme}://{target.netloc.decode()}")
                 response = self._http.get(target)
-        except httpx.HTTPError as exc:
+        except (httpx.HTTPError, httpx.InvalidURL) as exc:
             raise FinancePulseError(0, "Could not reach the API", f"{type(exc).__name__}: {exc}".rstrip(": ")) from exc
         try:
             body = response.json()
@@ -163,13 +173,16 @@ class FinancePulse:
     # ---- statements --------------------------------------------------------------------------------------------
 
     def statements(self, *, symbol: Many = None, sector: Many = None, theme_id: Optional[str] = None,
-                   topic_id: Optional[str] = None, sentiment: Many = None, importance_min: Optional[str] = None,
+                   topic_id: Optional[str] = None, storyline_id: Optional[str] = None, sentiment: Many = None,
+                   importance_min: Optional[str] = None,
                    source_type: Many = None, since: Optional[str] = None, until: Optional[str] = None,
                    has_image: Optional[bool] = None, limit: int = 50, cursor: Optional[str] = None) -> dict:
         """Search statements across all topics, newest first by the article's post time. One page.
-        symbol, sector, sentiment and source_type take one value or a list (OR)."""
+        symbol, sector, sentiment and source_type take one value or a list (OR). storyline_id gives every
+        statement of that storyline's topics; add symbol= for only those that name its symbol."""
         return self.get("/v2/statements", symbol=_many(symbol), sector=_many(sector), theme_id=theme_id,
-                        topic_id=topic_id, sentiment=_many(sentiment), importance_min=importance_min,
+                        topic_id=topic_id, storyline_id=storyline_id, sentiment=_many(sentiment),
+                        importance_min=importance_min,
                         source_type=_many(source_type), since=since, until=until, has_image=has_image, limit=limit,
                         cursor=cursor)
 
@@ -188,14 +201,15 @@ class FinancePulse:
     def feed(self, *, cursor: Optional[str] = None, symbol: Many = None, sector: Many = None,
              theme_id: Optional[str] = None, topic_id: Optional[str] = None, sentiment: Many = None,
              importance_min: Optional[str] = None, source_type: Many = None, limit: int = 100) -> dict:
-        """Statements in the order they entered the API, after `cursor`. Without a cursor: the last 24 hours.
+        """Statements in the order they entered the API, after `cursor`. Without a cursor the feed starts a
+        limited time back (the API's default starting point), not at the beginning of the window.
         next_cursor is always set; store it and pass it on the next call."""
         return self.get("/v2/feed", cursor=cursor, symbol=_many(symbol), sector=_many(sector), theme_id=theme_id,
                         topic_id=topic_id, sentiment=_many(sentiment), importance_min=importance_min,
                         source_type=_many(source_type), limit=limit)
 
     def poll_feed(self, *, cursor: Optional[str] = None, cursor_file: Union[str, Path, None] = None,
-                  interval: float = BUILD_INTERVAL_SECONDS, max_polls: Optional[int] = None,
+                  interval: float = DEFAULT_POLL_SECONDS, max_polls: Optional[int] = None,
                   **filters: Any) -> Iterator[dict]:
         """Yield new statements as they enter the API, forever (or for max_polls successful polls). Takes the
         filters of feed().
@@ -203,18 +217,19 @@ class FinancePulse:
         With cursor_file the position survives restarts: a statement is recorded as handled when you ask for
         the next one, so after a crash or a `break` nothing is skipped and only the statement you were working on
         is delivered again (dedupe on `id` if that matters). Two limits:
-        - The first run starts 24 hours back, and there is no position to store until its first page has been
-          fully handled. A restart before that begins again 24 hours before the restart, so statements of that
-          first page that were not handled and are older than that are not delivered.
+        - The first run starts at the feed's default starting point (a limited time back), and there is no
+          position to store until its first page has been fully handled. A restart before that begins again at
+          the default starting point as of the restart, so statements of that first page that were not handled
+          and are older than that are not delivered.
         - After a long pause the poller reads the whole backlog since its saved position, page after page
-          without sleeping, one request per `limit` statements. Delete the file to start 24 hours back instead.
-        Without cursor_file every start begins 24 hours back. A saved position belongs to the filters it was
-        reached with: use one cursor file per set of filters.
+          without sleeping, one request per `limit` statements. Delete the file to start afresh instead.
+        Without cursor_file every start begins at the default starting point. A saved position belongs to the
+        filters it was reached with: use one cursor file per set of filters.
 
-        A page that comes back full is followed immediately; otherwise the poller sleeps `interval` seconds, which
-        should not be lower than the API's 150 s build interval. Temporary failures (timeouts, network errors,
-        5xx) are retried with a growing pause of up to 5 minutes; other errors, such as a used-up quota (429),
-        are raised.
+        A page that comes back full is followed immediately; otherwise the poller sleeps `interval` seconds.
+        Every poll is one request, so a shorter interval uses more of your plan. Temporary failures (timeouts,
+        network errors, 5xx) are retried with a growing pause of up to 5 minutes; other errors, such as a
+        used-up quota (429), are raised.
         """
         path = Path(cursor_file) if cursor_file else None
         handled: set = set()
@@ -229,7 +244,7 @@ class FinancePulse:
                     raise TypeError
                 handled = set(ids)
             except (ValueError, KeyError, TypeError) as exc:
-                raise ValueError(f"{path} is not a poll_feed cursor file; delete it to start 24 hours back") from exc
+                raise ValueError(f"{path} is not a poll_feed cursor file; delete it to start afresh") from exc
             if cursor is None:
                 cursor = saved
             else:
@@ -276,43 +291,71 @@ class FinancePulse:
                topic_id: Optional[str] = None, interval: str = "day", since: Optional[str] = None,
                until: Optional[str] = None, source_type: Many = None, importance_min: Optional[str] = None) -> dict:
         """Hourly or daily statement counts, sentiment and distinct sources for exactly one entity (zero-filled).
-        The last bucket is the current, still incomplete hour or day."""
+        Without `until` the last bucket is the current, still incomplete hour or day."""
         return self.get("/v2/series", symbol=symbol, sector=sector, theme_id=theme_id, topic_id=topic_id,
                         interval=interval, since=since, until=until, source_type=_many(source_type),
                         importance_min=importance_min)
 
     def symbols(self, *, period: str = "w", sort: str = "mentions", sector: Optional[str] = None,
-                kind: Many = None, min_mentions: int = 3, limit: int = 500) -> dict:
+                kind: Many = None, min_mentions: int = 3, q: Optional[str] = None, since: Optional[str] = None,
+                until: Optional[str] = None, limit: int = 500) -> dict:
         """Symbol screener. period: d (24 h), w (7 d), window. sort: mentions, sources, score, change.
         kind narrows to entity kinds, e.g. ["equity", "etf"] for tradable tickers (all kinds are in meta()).
-        Each row carries the entity's `kind` and `name`. `change` is null for period="window". limit: up to
-        20000 (every symbol: period="window", min_mentions=1, limit=20000)."""
+        q looks a symbol up by code or name (q="micron" finds MU) among those mentioned in the period, so
+        pass period="window" with it; it ignores min_mentions.
+        since / until (ISO-8601) count a custom interval instead of `period`; the change is then against the
+        equally long interval before it. Each row carries the entity's `kind` and `name`, and the `_single`
+        counts over statements that name only that entity. `change` is null for period="window"."""
         return self.get("/v2/symbols", period=period, sort=sort, sector=sector, kind=_many(kind),
-                        min_mentions=min_mentions, limit=limit)
+                        min_mentions=min_mentions, q=q, since=since, until=until, limit=limit)
 
-    def sectors(self, *, period: str = "w", sort: str = "mentions") -> dict:
-        """The 11 GICS sectors with the same statistics as symbols()."""
-        return self.get("/v2/sectors", period=period, sort=sort)
+    def symbol(self, code: str) -> dict:
+        """One symbol in one call: who it is, its counts and sentiment per period, sectors, largest topics, top
+        storylines, related symbols and newest statements. `periods` holds d, w and window, leaving out a period
+        without mentions. A known alias answers as its code; look a code up with symbols(q=...)."""
+        return self.get(f"/v2/symbols/{_segment(code)}")
+
+    def sectors(self, *, period: str = "w", sort: str = "mentions", since: Optional[str] = None,
+                until: Optional[str] = None) -> dict:
+        """The GICS sectors with the same statistics as symbols(); since / until work the same way."""
+        return self.get("/v2/sectors", period=period, sort=sort, since=since, until=until)
 
     # ---- developments ------------------------------------------------------------------------------------------
 
     def trending(self, *, kind: Optional[str] = None, theme_id: Optional[str] = None,
                  symbol: Optional[str] = None) -> dict:
-        """Developments the most outlets picked up. kind: live (last 2 hours) or slot (2-hour slots, 7 days)."""
+        """Developments the most outlets picked up. kind: live (the current list) or slot (the top of each
+        recent time slot); without kind, both. Each item's `trending` labels say where it ranked."""
         return self.get("/v2/trending", kind=kind, theme_id=theme_id, symbol=symbol)
 
     def topics(self, *, theme_id: Optional[str] = None, symbol: Many = None, sector: Optional[str] = None,
-               ids: Many = None, updated_since: Optional[str] = None, min_statements: int = 1,
-               sort: str = "recent", limit: int = 50, cursor: Optional[str] = None) -> dict:
-        """Topics (developments). sort: recent, size, oldest, velocity. ids: up to 50 topic ids.
-        A topic's `revision` changes whenever the topic or its last-7-day statements change."""
-        return self.get("/v2/topics", theme_id=theme_id, symbol=_many(symbol), sector=sector, ids=_many(ids),
-                        updated_since=updated_since, min_statements=min_statements, sort=sort, limit=limit,
-                        cursor=cursor)
+               storyline_id: Optional[str] = None, ids: Many = None, updated_since: Optional[str] = None,
+               min_statements: int = 1, sort: str = "recent", limit: int = 50,
+               cursor: Optional[str] = None) -> dict:
+        """Topics (developments). sort: recent, size, oldest, velocity. ids: several topic ids at once.
+        storyline_id: only the topics of that storyline. A topic's `revision` changes whenever the topic or its
+        recent statements change; `storylines` lists the storylines it belongs to."""
+        return self.get("/v2/topics", theme_id=theme_id, symbol=_many(symbol), sector=sector,
+                        storyline_id=storyline_id, ids=_many(ids), updated_since=updated_since,
+                        min_statements=min_statements, sort=sort, limit=limit, cursor=cursor)
 
     def topic(self, topic_id: str) -> dict:
-        """One topic with its statement counts per source type and its 20 newest statements."""
+        """One topic with its statement counts per source type, its storylines and its newest statements."""
         return self.get(f"/v2/topics/{_segment(topic_id)}")
+
+    def storylines(self, *, symbol: Optional[str] = None, ids: Many = None, min_topics: int = 1,
+                   sort: str = "recent", limit: int = 50, cursor: Optional[str] = None) -> dict:
+        """One symbol's storylines: its topics grouped into continuing stories (an event, then its follow-ups).
+        Pass exactly one symbol, or ids= for several storylines by id. min_topics=2 leaves out the storylines
+        that hold a single topic. sort: recent, mentions, topics, velocity. The grouping is automatic: a
+        reading aid, not a count of events."""
+        return self.get("/v2/storylines", symbol=symbol, ids=_many(ids), min_topics=min_topics,
+                        sort=None if ids else sort, limit=None if ids else limit, cursor=cursor)
+
+    def storyline(self, storyline_id: str) -> dict:
+        """One storyline with its topics (oldest first) and its newest statements. For a very long storyline
+        compare `topics` with the length of `members`; topics(storyline_id=...) pages through all of them."""
+        return self.get(f"/v2/storylines/{_segment(storyline_id)}")
 
     def themes(self, *, symbol: Many = None, sector: Many = None, sort: str = "size") -> dict:
         """All themes with their statistics, or only those with statements about a symbol or sector.
@@ -323,5 +366,5 @@ class FinancePulse:
         return self.get(f"/v2/themes/{_segment(theme_id)}")
 
     def meta(self) -> dict:
-        """The window, counts, known data incidents and every accepted filter value."""
+        """The window the API covers, counts and every accepted filter value."""
         return self.get("/v2/meta")
