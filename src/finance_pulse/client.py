@@ -6,6 +6,7 @@ Parameters, fields and limits are documented in the API reference: https://finto
 from __future__ import annotations
 
 import json
+import logging
 import math
 import os
 import time
@@ -38,6 +39,8 @@ RAPIDAPI = Backend(base_url="https://finance-pulse.p.rapidapi.com", key_header="
                    key_env="RAPIDAPI_KEY", signup_url=PRICING_URL,
                    extra_headers={"X-RapidAPI-Host": "finance-pulse.p.rapidapi.com"})
 DEFAULT_POLL_SECONDS = 150        # poll_feed's pause between polls; a client default, change it with interval=
+PAGE_RETRIES = 5                  # iter_statements retries a failed page this often in a row, then raises
+log = logging.getLogger("finance_pulse")      # one warning per retry, so a long spell of them is visible
 
 Many = Union[str, Sequence[str], None]
 
@@ -59,8 +62,26 @@ class FinancePulseError(Exception):
 
     @property
     def transient(self) -> bool:
-        """True when the same request may succeed later: no answer, or a server-side (5xx) error."""
+        """True for no answer or a server-side (5xx) error: the same request may succeed later. A 429 is not
+        counted here, though it too usually passes unless `quota_used_up`."""
         return self.status == 0 or self.status >= 500
+
+    @property
+    def quota_used_up(self) -> bool:
+        """True for a 429 whose message says the plan's quota is used up: waiting a few minutes will not help."""
+        return self.status == 429 and "quota" in self.title.lower()
+
+
+def _retry_wait(exc: FinancePulseError, attempt: int) -> Optional[float]:
+    """Seconds to wait before retry number `attempt` + 1 after `exc`, or None when retrying will not help.
+    A temporary failure (no answer, 5xx) waits 10, 20, 40, ... seconds; a 429 for too many requests at once or
+    the plan's rate limit waits 5, 15, 45, ... seconds; a longer Retry-After is waited instead; never more than
+    5 minutes. A used-up quota, a 429 that asks for a longer wait than 5 minutes, and other errors are not retried."""
+    if exc.transient:
+        return min(300, max(exc.retry_after or 0, 10 * 2 ** min(attempt, 5)))
+    if exc.status == 429 and not exc.quota_used_up and (exc.retry_after or 0) <= 300:
+        return min(300, max(exc.retry_after or 0, 5 * 3 ** min(attempt, 4)))
+    return None
 
 
 def _many(value: Many) -> Optional[str]:
@@ -157,10 +178,23 @@ class FinancePulse:
             retry_after = None
         raise FinancePulseError(response.status_code, str(title), detail, body.get("param"), retry_after)
 
+    def _retrying(self, call, /, *args, **kwargs) -> dict:
+        """call(*args, **kwargs), retried up to PAGE_RETRIES times in a row when _retry_wait allows it."""
+        for attempt in range(PAGE_RETRIES + 1):
+            try:
+                return call(*args, **kwargs)
+            except FinancePulseError as exc:
+                wait = _retry_wait(exc, attempt)
+                if wait is None or attempt == PAGE_RETRIES:
+                    raise
+                log.warning("%s; retrying in %.0f s", exc, wait)
+                time.sleep(wait)
+        raise AssertionError("unreachable")
+
     def _pages(self, path: str, params: dict, max_items: Optional[int]) -> Iterator[dict]:
         seen = 0
         while True:
-            page = self.get(path, **params)
+            page = self._retrying(self.get, path, **params)
             for row in page["data"]:
                 yield row
                 seen += 1
@@ -188,7 +222,10 @@ class FinancePulse:
 
     def iter_statements(self, *, max_items: Optional[int] = 500, **filters: Any) -> Iterator[dict]:
         """Statements across pages (each page is one request). Takes the filters of statements().
-        max_items=None reads to the end of the window."""
+        max_items=None reads to the end of your plan's history. A page that fails for a temporary reason (timeout, network
+        error, 5xx) or with a passing 429 is retried up to five times in a row, with a growing pause; a used-up
+        quota, or a 429 that asks to wait more than 5 minutes, is raised at once. Each retry is a warning on the
+        "finance_pulse" logger."""
         filters.setdefault("limit", 100)
         for key in ("symbol", "sector", "sentiment", "source_type"):
             if key in filters:
@@ -202,8 +239,9 @@ class FinancePulse:
              theme_id: Optional[str] = None, topic_id: Optional[str] = None, sentiment: Many = None,
              importance_min: Optional[str] = None, source_type: Many = None, limit: int = 100) -> dict:
         """Statements in the order they entered the API, after `cursor`. Without a cursor the feed starts a
-        limited time back (the API's default starting point), not at the beginning of the window.
-        next_cursor is always set; store it and pass it on the next call."""
+        limited time back (the API's default starting point), not at the start of your history.
+        next_cursor is always set; store it and pass it on the next call. `more` true means more statements may
+        follow now (even after a short page): call again at once; false means you are up to date."""
         return self.get("/v2/feed", cursor=cursor, symbol=_many(symbol), sector=_many(sector), theme_id=theme_id,
                         topic_id=topic_id, sentiment=_many(sentiment), importance_min=importance_min,
                         source_type=_many(source_type), limit=limit)
@@ -221,15 +259,19 @@ class FinancePulse:
           position to store until its first page has been fully handled. A restart before that begins again at
           the default starting point as of the restart, so statements of that first page that were not handled
           and are older than that are not delivered.
-        - After a long pause the poller reads the whole backlog since its saved position, page after page
-          without sleeping, one request per `limit` statements. Delete the file to start afresh instead.
+        - After a long pause the poller reads the whole backlog since its saved position, as far back as your
+          plan's history reaches (older statements are skipped), page after page without sleeping, at least one
+          request per `limit` statements. Delete the file to start afresh instead.
         Without cursor_file every start begins at the default starting point. A saved position belongs to the
         filters it was reached with: use one cursor file per set of filters.
 
-        A page that comes back full is followed immediately; otherwise the poller sleeps `interval` seconds.
-        Every poll is one request, so a shorter interval uses more of your plan. Temporary failures (timeouts,
-        network errors, 5xx) are retried with a growing pause of up to 5 minutes; other errors, such as a
-        used-up quota (429), are raised.
+        When the API says more statements may follow (`more`), the next page is asked for at once; otherwise
+        the poller sleeps `interval` seconds.
+        Every poll is one request: at the default interval a poller that runs all month makes about 17,000
+        requests, so set `interval` to fit your plan's monthly quota. Temporary failures (timeouts, network
+        errors, 5xx) and a 429 for too many requests at once or the plan's rate limit are retried for as long as
+        they last, with a pause that grows to 5 minutes; each retry is a warning on the "finance_pulse" logger.
+        A used-up quota, a 429 that asks to wait more than 5 minutes, and other errors are raised at once.
         """
         path = Path(cursor_file) if cursor_file else None
         handled: set = set()
@@ -264,10 +306,12 @@ class FinancePulse:
             try:
                 page = self.feed(cursor=cursor, **filters)
             except FinancePulseError as exc:
-                if not exc.transient:
+                wait = _retry_wait(exc, failures)
+                if wait is None:
                     raise
                 failures += 1
-                time.sleep(min(300, exc.retry_after or 10 * 2 ** min(failures - 1, 5)))
+                log.warning("%s; retrying in %.0f s", exc, wait)
+                time.sleep(wait)
                 continue
             failures = 0
             polls += 1
@@ -280,9 +324,14 @@ class FinancePulse:
             # The page is behind the new cursor; ids handled earlier that it did not contain (the previous run
             # used a larger limit) are still ahead and stay recorded.
             handled -= {statement["id"] for statement in page["data"]}
-            cursor = page["next_cursor"]
+            sent, cursor = cursor, page["next_cursor"]
             save(cursor, handled)
-            if len(page["data"]) < limit and (max_polls is None or polls < max_polls):
+            more = page.get("more")
+            if more is None:                # an answer without the flag: a full page means more may follow
+                more = len(page["data"]) >= limit
+            if not page["data"] and cursor == sent:
+                more = False                # a position that does not move is never followed without a pause
+            if not more and (max_polls is None or polls < max_polls):
                 time.sleep(interval)
 
     # ---- signals -----------------------------------------------------------------------------------------------
@@ -366,5 +415,6 @@ class FinancePulse:
         return self.get(f"/v2/themes/{_segment(theme_id)}")
 
     def meta(self) -> dict:
-        """The window the API covers, counts and every accepted filter value."""
+        """How far back your plan's history goes (window_start, window_days), counts and every accepted filter
+        value."""
         return self.get("/v2/meta")

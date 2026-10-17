@@ -44,7 +44,7 @@ INSTRUCTIONS = """Finance Pulse turns financial news into statements: one-senten
 with sentiment (bullish/bearish/neutral), importance (low/medium/high/ultra), symbols, GICS sectors, the source,
 the article's headline and its publication time. Statements about the same development are grouped into topics;
 one company's topics that continue each other form a storyline; topics also belong to standing themes. The data
-is a rolling window of recent news: `window_start` in every result says how far back it goes.
+reaches back as far as the user's plan includes: `window_start` in every result says where that history starts.
 
 Each tool call normally uses one request of the user's plan quota, so prefer one well-filtered call over several:
 everything about one company -> get_symbol; news about a company or sector -> search_statements; what is big
@@ -57,8 +57,9 @@ speculative analysis or reddit. Symbols are entity codes with a kind: equities a
 (NVDA, 0700.HK), and indices, rates, currencies, crypto, commodities and organisations under short codes (SPX,
 USD, BTC, FED); `entities` on a statement gives each code's name and kind. Sentiment describes the
 statement, not a price forecast. Topics and storylines are grouped automatically and can be wrong or incomplete:
-do not count them as events. Every result carries `built_at`, when the data was last updated, and `lag_days`,
-the age of the newest statement at that moment: if `built_at` is old or `lag_days` is well above zero, say the
+do not count them as events. Counts on topics, storylines and themes cover all the API holds for them, so they
+can be more than the plan's history lets you page through. Every result carries `built_at`, when the data was
+last updated, and `lag_days`, the age of the newest statement at that moment: if `built_at` is old or `lag_days` is well above zero, say the
 data may be out of date."""
 
 server = MCPServer("finance-pulse", title="Finance Pulse", instructions=INSTRUCTIONS, version=__version__,
@@ -107,9 +108,12 @@ def _call(method: str, *args, _hint: str = "", _not_found: str = "", **kwargs) -
     except FinancePulseError as exc:
         seconds = round(exc.retry_after) if exc.retry_after and exc.retry_after >= 1 else 0
         wait = f"in {seconds} second{'s' if seconds != 1 else ''}" if seconds else "shortly"
+        if exc.quota_used_up:
+            raise ToolError(f"The plan's request quota is used up ({exc.title}). Retrying will not help until it "
+                            f"resets or the plan changes; tell the user. Plans: {BACKEND.signup_url}") from exc
         if exc.status == 429:
-            raise ToolError(f"The plan's request quota or rate limit is used up ({exc.title}). If it is the rate "
-                            f"limit, try again {wait}. Plans: {BACKEND.signup_url}") from exc
+            raise ToolError(f"The plan's rate limit was reached or too many requests are open at once "
+                            f"({exc.title}). This usually passes: try again {wait}, one call at a time.") from exc
         if exc.status in (401, 403):
             raise ToolError(f"{BACKEND.key_env} is missing, wrong or not subscribed to Finance Pulse ({exc.title}). "
                             f"Subscribe (there is a free plan): {BACKEND.signup_url}") from exc
@@ -239,8 +243,8 @@ def get_symbol(
     """One company or other entity in a single call. Use first for "what is going on with X".
 
     Returns who it is (name, kind, exchange); its mentions, topics, distinct sources, sentiment counts and score
-    for the last 24 hours (d), the last 7 days (w) and the whole window, with the change against the period
-    before and the counts over statements that name only this entity (`mentions_single`, `score_single`); the
+    for the last 24 hours (d), the last 7 days (w) and all the history the plan includes, with the change
+    against the period before and the counts over statements that name only this entity (`mentions_single`, `score_single`); the
     sectors of its statements; its largest topics; its storylines with the most mentions lately; the entities
     it shares topics with (`related`, empty for a rarely mentioned symbol); and its newest statements.
     A period without any mention is left out of `periods`. `more_statements` says whether the symbol has
@@ -249,7 +253,7 @@ def get_symbol(
     fewer, the cursor is null and search_statements(symbol=...) starts again at the newest, repeating the ones
     shown here. Do not guess a code: a wrong one costs a request. Look it up with find_symbol.
     """
-    r = _call("symbol", code, _not_found="No statement in the data mentions this code.",
+    r = _call("symbol", code, _not_found="No statement within the plan's history mentions this code.",
               _hint="If the code itself is in doubt, look it up with find_symbol (pass part of the name).")
     d = r["data"]
     return {"id": d.get("id"), "name": d.get("name"), "kind": d.get("kind"), "exchange": d.get("exchange"),
@@ -269,8 +273,8 @@ def find_symbol(
         limit: Annotated[int, Field(ge=1, le=50, description="How many matches to return")] = 10) -> dict:
     """Look up the code of a company, index, currency, commodity or organisation by name: "micron" finds MU.
     The query is matched against codes and registered names, so use the company's own name rather than a brand
-    (Alphabet, not Google). Returns the matches that appear in the data, most mentioned first, each with its
-    code (id), name and kind; an empty list means nothing in the data matches, and a list as long as `limit`
+    (Alphabet, not Google). Returns the matches mentioned within the plan's history, most mentioned first, each
+    with its code (id), name and kind; an empty list means nothing there matches, and a list as long as `limit`
     may have more matches behind it. Use the code as `symbol` or `code` in the other tools."""
     r = _call("symbols", period="window", sort="mentions", q=query, min_mentions=1, limit=limit)
     return {"matches": [{k: x.get(k) for k in ("id", "name", "kind", "mentions", "last_seen")} for x in r["data"][:limit]],
@@ -280,7 +284,7 @@ def find_symbol(
 @_tool("Screen symbols or sectors by news attention")
 def screen(
         rank: Literal["symbols", "sectors"] = "symbols",
-        period: Annotated[Literal["d", "w", "window"], Field(description="d = last 24 hours, w = last 7 days, window = everything held")] = "d",
+        period: Annotated[Literal["d", "w", "window"], Field(description="d = last 24 hours, w = last 7 days, window = all the history the plan includes")] = "d",
         sort: Literal["change", "mentions", "sources", "score"] = "change", sector: SectorArg = None,
         entity_kinds: Annotated[Optional[str], Field(description='Comma-separated entity kinds from: equity, etf, index, rate, fx, crypto, commodity, org, private, country. E.g. "equity,etf"')] = None,
         min_mentions: Annotated[int, Field(ge=1, description="Leave out codes with fewer mentions")] = 3,
@@ -289,10 +293,11 @@ def screen(
         limit: Annotated[int, Field(ge=1, le=100, description="How many rows to return")] = 20) -> dict:
     """Rank symbols (or the GICS sectors) by news attention. Use for "which tickers are suddenly in the news".
 
-    period: d = last 24 hours, w = last 7 days, window = everything held; or pass since (and until) to count any
-    interval. sort=change ranks by the rise in mentions against the period (or equally long interval) before.
-    `change` is null when there is nothing before to compare with: for period=window, for an interval given
-    only by `until`, and for an interval whose preceding interval lies outside the data. Use sort=mentions then.
+    period: d = last 24 hours, w = last 7 days, window = all the history the plan includes; or pass since (and
+    until) to count any interval. sort=change ranks by the rise in mentions against the period (or equally
+    long interval) before. `change` is null when there is nothing before to compare with: for period=window,
+    for an interval given only by `until`, and for an interval whose preceding interval reaches before the
+    plan's history. Use sort=mentions then.
     Each row: mentions, topics, sources (distinct outlets), sentiment counts, score and change; symbol rows also
     carry name, kind and the counts over statements naming only that symbol (`mentions_single`, `score_single`).
     Only for rank=symbols: sector limits the screen to one sector; min_mentions drops rarely mentioned codes;
@@ -363,7 +368,7 @@ def find_topics(
         min_statements: Annotated[Optional[int], Field(ge=1, description="Leave out developments with fewer statements. Default: 3, or 1 with storyline_id")] = None,
         limit: PageSize = 15, cursor: Cursor = None) -> dict:
     """List developments for a symbol, sector, theme or storyline. sort=velocity: most statements in the last 24
-    hours; size: most statements in the window; recent: latest statement first. symbol: comma-separate several
+    hours; size: most statements; recent: latest statement first. symbol: comma-separate several
     (OR). Topics with fewer than 3 statements are left out unless you lower min_statements, so an empty list
     can mean "only small ones": retry with min_statements=1. With storyline_id every topic of the storyline is
     listed by default (sort="oldest" gives them in order)."""
@@ -428,7 +433,8 @@ def get_storyline(
     search_statements(storyline_id=..., cursor=...) continues exactly after them (add symbol to keep only those
     naming the company). With fewer, the cursor is null and search_statements(storyline_id=...) starts again at
     the newest, repeating the ones shown here."""
-    r = _call("storyline", storyline_id, _hint="Storyline ids come from `storylines`, `get_symbol` or a topic's storylines.")
+    r = _call("storyline", storyline_id, _not_found="Its topics may be older than the plan's history.",
+              _hint="Storyline ids come from `storylines`, `get_symbol` or a topic's storylines.")
     d = r["data"]
     out = _storyline(d)
     shown = [_member(m) for m in (d.get("members") or [])[:members]]
@@ -454,10 +460,10 @@ def themes(symbol: Symbols = None, sector: SectorArg = None,
     return {"themes": [{k: t.get(k) for k in keep} for t in r["data"]], **_fresh(r)}
 
 
-@_tool("Data window, counts and accepted values")
+@_tool("History reach, counts and accepted values")
 def reference() -> dict:
-    """What the API holds right now: the window (how far back the data goes), counts of statements, topics,
-    storylines and symbols, the themes with their ids, and the accepted sector, sentiment, importance,
+    """What the API holds right now: how far back the plan's history goes (window_days), counts of statements,
+    topics, storylines and symbols, the themes with their ids, and the accepted sector, sentiment, importance,
     source-type and entity-kind values. One call per conversation is enough."""
     r = _call("meta")
     keep = ("window_days", "newest_statement", "statements", "statements_7d", "topics", "topics_7d", "themes",

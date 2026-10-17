@@ -3,7 +3,7 @@
   "name": "io.github.SlothyAfk/finance-pulse",
   "title": "Finance Pulse",
   "description": "Financial news as sourced statements with sentiment and tickers, grouped into developments.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "websiteUrl": "https://fintopic.news/docs",
   "repository": {
     "url": "https://github.com/SlothyAfk/finance-pulse-python",
@@ -13,7 +13,7 @@
     {
       "registryType": "pypi",
       "identifier": "finance-pulse",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"

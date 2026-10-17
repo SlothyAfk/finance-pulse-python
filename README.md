@@ -17,8 +17,8 @@ This package gives you two ways to use it:
 - an **MCP server**, so Claude, Cursor and other MCP clients can query the news directly.
 
 **You need a RapidAPI key that is subscribed to Finance Pulse.** Create a RapidAPI account, open the
-[plans page](https://rapidapi.com/evankos/api/finance-pulse/pricing) and subscribe to a plan: Basic is free and is
-enough to try everything below. Then copy your `X-RapidAPI-Key` from the API's page on RapidAPI (the endpoint playground shows it). A key that
+[plans page](https://rapidapi.com/evankos/api/finance-pulse/pricing) and subscribe to a plan: there is a free one to
+try everything below. Then copy your `X-RapidAPI-Key` from the API's page on RapidAPI (the endpoint playground shows it). A key that
 is not subscribed to a plan is answered with 403.
 
 ## Use it from Claude or Cursor (MCP)
@@ -80,7 +80,7 @@ Then ask things like:
 | `sentiment_series` | Daily or hourly news volume and sentiment for a symbol, sector, theme or topic |
 | `screen` | Symbols (optionally only equities and ETFs) or sectors ranked by news attention and its change, for the last day, week or any interval |
 | `themes` | The standing subjects with their volume and sentiment, optionally only those a symbol or sector appears in |
-| `reference` | What the API holds: the data window, counts, theme ids and accepted filter values |
+| `reference` | How far back your plan's history goes, counts, theme ids and accepted filter values |
 
 Each tool call is normally one API request. Results are trimmed and come in small pages.
 
@@ -139,16 +139,21 @@ carries `published_at` and `indexed_at`.
 survives restarts: after a crash nothing is skipped and only the statement you were working on is delivered
 again. The first run, with no saved position, starts at the feed's default starting point (a limited time back,
 not the beginning of the data), and the position is first stored once that first page has been handled. After a
-long pause the poller reads the whole backlog since its saved position, one request per 100 statements; delete
-the cursor file to start afresh instead.
+long pause the poller reads the whole backlog since its saved position, as far back as your plan's history
+reaches, at least one request per 100 statements; delete the cursor file to start afresh instead.
 
 ```python
 for s in fp.poll_feed(sector="Energy", importance_min="high", cursor_file="energy.cursor.json"):
     print(s["indexed_at"], s["statement"], s["source_url"])
 ```
 
-The poller pauses 150 seconds between polls unless you pass `interval=`; every poll is one request. Timeouts and
-server errors are retried; a used-up quota (429) is raised.
+The poller pauses 150 seconds between polls unless you pass `interval=`. Every poll is one request (and so is
+every retry), so at the default a poller that runs all month makes about 17,000 requests: set `interval=` to fit
+your plan's monthly quota (a month has about 2.6 million seconds; divide by the requests you want to spend on
+polling). Timeouts, server errors and a passing 429 (the plan's rate limit, or too many requests at once) are
+retried for as long as they last, with a pause that grows to 5 minutes, and each retry is logged as a warning
+on the `finance_pulse` logger. A used-up quota, or a 429 that asks to wait more than 5 minutes, is raised at
+once.
 
 ### More than one page
 
@@ -156,7 +161,7 @@ server errors are retried; a used-up quota (429) is raised.
 rows = list(fp.iter_statements(symbol=["NVDA", "AMD"], importance_min="medium", max_items=1000))
 ```
 
-Each page of 100 is one request. Without `max_items` it stops after 500 rows; `max_items=None` reads to the end
+Each page of 100 is one request (and each retry one more). Without `max_items` it stops after 500 rows; `max_items=None` reads to the end
 of the data.
 
 ### Errors
@@ -171,8 +176,15 @@ except FinancePulseError as e:
     # 400 Invalid symbol 'S&P' is not a ticker symbol
 ```
 
-A `429` means the plan's request quota or rate limit is used up. Timeouts and network failures are raised as
-`FinancePulseError` too, with `status` 0; `e.transient` is true for those and for 5xx answers.
+A `429` means too many requests: the plan's quota is used up (`e.quota_used_up` is true), the plan's rate
+limit was reached, or too many requests are open at once; the last two usually pass on their own. Send
+requests one after another rather than many in parallel. Timeouts and network failures are raised as
+`FinancePulseError` too, with `status` 0; `e.transient` is true for those and for 5xx answers. `e.retry_after`
+says how long to wait when the API gives a time.
+
+Single calls raise every error at once. `iter_statements` retries a page up to five times in a row after a
+temporary failure or a passing 429, with a growing pause; `poll_feed` keeps retrying those for as long as they
+last (see above). Both raise at once a used-up quota and a 429 that asks to wait more than 5 minutes.
 
 ### Methods
 
@@ -202,8 +214,8 @@ worked examples. `fp.get("/v2/...", **params)` calls any endpoint the client has
   statements' labels.
 - **Topics and storylines are grouped automatically** and can be wrong or incomplete: a reading aid, not a count
   of events.
-- **The data is a rolling window of recent news.** `meta()` says how far back it goes (`window_start`,
-  `window_days`) and how much it holds.
+- **How far back you can read depends on your plan.** `window_start` in every response says where your
+  history starts and `meta()` gives it in days (`window_days`); older statements are not returned.
 
 See [the docs](https://fintopic.news/docs) for the full list of caveats.
 

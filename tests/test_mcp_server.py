@@ -182,8 +182,9 @@ def test_reference(api):
 
 
 def test_quota_error_points_to_the_plans(api):
-    with pytest.raises(ToolError, match="MONTHLY quota.*rapidapi.com"):
+    with pytest.raises(ToolError, match="MONTHLY quota.*will not help.*rapidapi.com") as info:
         mcp_server.search_statements(symbol="QUOTA")
+    assert "try again" not in str(info.value).lower()
 
 
 def test_network_failure_is_explained(api):
@@ -353,7 +354,7 @@ def test_get_symbol_for_a_rarely_mentioned_symbol(api):
 
 
 def test_get_symbol_errors_point_to_find_symbol(api):
-    with pytest.raises(ToolError, match="Symbol not found. No statement in the data mentions this code. If the code "
+    with pytest.raises(ToolError, match="Symbol not found. No statement within the plan.s history mentions this code. If the code "
                                         "itself is in doubt, look it up with find_symbol") as info:
         mcp_server.get_symbol("NOPE")
     assert "/v2/" not in str(info.value)                     # no API path in what the model reads
@@ -407,8 +408,9 @@ def test_error_texts_for_gateway_answers(monkeypatch):
         with pytest.raises(ToolError, match=f"RAPIDAPI_KEY is missing, wrong or not subscribed.*{message[:12]}.*free plan"):
             mcp_server.reference()
     with_answer(monkeypatch, lambda r: httpx.Response(429, headers={"retry-after": "2"}, json={"message": "Too many requests"}))
-    with pytest.raises(ToolError, match="Too many requests.*try again in 2 seconds.*rapidapi.com"):
+    with pytest.raises(ToolError, match="rate limit was reached.*Too many requests.*usually passes: try again in 2 seconds, one call") as info:
         mcp_server.reference()
+    assert "quota" not in str(info.value)
 
 
 def test_page_passes_the_cursor_on_only_when_nothing_was_cut():
@@ -557,10 +559,11 @@ def test_get_storyline_with_every_topic_listed_drops_the_duplicate_list(monkeypa
     assert len(out["members"]) == 2 and "top_topics" not in out
 
 
-def test_get_storyline_404_says_where_ids_come_from(monkeypatch):
+def test_get_storyline_404_says_why_and_where_ids_come_from(monkeypatch):
     with_answer(monkeypatch, lambda r: httpx.Response(404, json={"title": "Storyline not found", "status": 404,
-                                                                 "detail": "Its topics may have aged out of the window."}))
-    with pytest.raises(ToolError, match="Storyline not found. Storyline ids come from"):
+                                                                 "detail": "Its topics may be older than your plan's history."}))
+    with pytest.raises(ToolError, match="Storyline not found. Its topics may be older than the plan's history. "
+                                        "Storyline ids come from"):
         mcp_server.get_storyline("gone")
 
 

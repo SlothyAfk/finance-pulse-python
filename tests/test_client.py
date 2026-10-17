@@ -239,7 +239,7 @@ def test_poll_feed_retries_temporary_failures_and_raises_the_rest(monkeypatch):
     answers = iter([httpx.Response(503, headers={"retry-after": "60"}, json={"title": "Temporarily unavailable"}),
                     httpx.ConnectError("down"),
                     httpx.Response(200, json={"data": [{"id": "s1"}], "next_cursor": "c1", "snapshot": SNAPSHOT}),
-                    httpx.Response(429, json={"message": "quota"})])
+                    httpx.Response(429, json={"message": "You have exceeded the MONTHLY quota for Requests"})])
 
     def handler(request):
         answer = next(answers)
@@ -252,6 +252,124 @@ def test_poll_feed_retries_temporary_failures_and_raises_the_rest(monkeypatch):
     assert slept == [60, 20]                 # Retry-After, then the growing pause (not capped by interval)
     with pytest.raises(FinancePulseError) as info:
         next(feed)
+    assert info.value.status == 429 and info.value.quota_used_up
+    assert slept == [60, 20, 0]              # the interval; a used-up quota is raised without waiting
+
+
+def test_poll_feed_waits_out_a_busy_spell_of_any_length(tmp_path, monkeypatch):
+    slept = []
+    monkeypatch.setattr("finance_pulse.client.time.sleep", slept.append)
+    busy = httpx.Response(429, json={"title": "Too many requests"})
+    pages = iter([busy] * 7 + [httpx.Response(503, json={"title": "x"}), busy,
+                               httpx.Response(200, json={"data": [{"id": "s1"}], "next_cursor": "c1",
+                                                         "snapshot": SNAPSHOT})])
+    path = tmp_path / "cursor.json"
+    assert [s["id"] for s in make(lambda request: next(pages)).poll_feed(cursor_file=path, max_polls=1)] == ["s1"]
+    assert slept == [5, 15, 45, 135, 300, 300, 300, 300, 300]   # 429s and the 503 share one growing pause
+    assert json.loads(path.read_text()) == {"cursor": "c1", "handled": []}
+
+
+@pytest.mark.parametrize("answer", [
+    httpx.Response(429, json={"message": "You have exceeded the DAILY quota for Requests on your current plan"}),
+    httpx.Response(429, headers={"retry-after": "3600"}, json={"title": "Too many requests"}),
+    httpx.Response(400, json={"title": "Invalid parameter"}),
+])
+def test_what_waiting_will_not_cure_is_raised_at_once(monkeypatch, answer):
+    monkeypatch.setattr("finance_pulse.client.time.sleep", lambda s: pytest.fail("slept"))
+    fp = make(lambda request: answer)
+    for run in (lambda: next(fp.poll_feed()), lambda: list(fp.iter_statements())):
+        with pytest.raises(FinancePulseError) as info:
+            run()
+        assert info.value.status == answer.status_code
+
+
+def test_iter_statements_retries_a_page_five_times_on_the_same_cursor(monkeypatch):
+    slept = []
+    monkeypatch.setattr("finance_pulse.client.time.sleep", slept.append)
+    cursors = []
+    answers = iter([httpx.Response(200, json={"data": [{"id": "s1"}], "next_cursor": "c1", "snapshot": SNAPSHOT}),
+                    httpx.Response(429, headers={"retry-after": "0"}, json={"title": "Too many requests"}),
+                    httpx.ConnectTimeout("slow"),
+                    httpx.Response(502, json={"title": "Bad gateway"}),
+                    httpx.Response(200, json={"data": [{"id": "s2"}], "next_cursor": "c2", "snapshot": SNAPSHOT})]
+                   + [httpx.Response(429, json={"title": "Too many requests"})] * 6)
+
+    def handler(request):
+        cursors.append(request.url.params.get("cursor"))
+        answer = next(answers)
+        if isinstance(answer, Exception):
+            raise answer
+        return answer
+
+    rows = make(handler).iter_statements(max_items=None)
+    assert [next(rows)["id"], next(rows)["id"]] == ["s1", "s2"]
+    assert slept == [5, 20, 40]              # a Retry-After of 0 means the default pause
+    assert cursors == [None, "c1", "c1", "c1", "c1"]
+    with pytest.raises(FinancePulseError) as info:
+        next(rows)
+    assert info.value.status == 429 and not info.value.quota_used_up
+    assert cursors[5:] == ["c2"] * 6 and slept[3:] == [5, 15, 45, 135, 300]
+
+
+# What really answers 429: the API's front door (plain text, no Retry-After) and RapidAPI's gateway.
+PASSING_429 = [httpx.Response(429, text="Too Many Requests"),
+               httpx.Response(429, json={"message": "You have exceeded the rate limit per second for your plan, "
+                                                    "BASIC, by the API provider"})]
+QUOTA_429 = httpx.Response(429, json={"message": "You have exceeded the MONTHLY quota for Requests on your current "
+                                                 "plan, BASIC. Upgrade your plan at https://rapidapi.com/x"})
+
+
+@pytest.mark.parametrize("busy", PASSING_429)
+def test_real_429_answers_are_told_apart(monkeypatch, busy):
+    slept = []
+    monkeypatch.setattr("finance_pulse.client.time.sleep", slept.append)
+    page = httpx.Response(200, json={"data": [{"id": "s1"}], "next_cursor": None, "snapshot": SNAPSHOT})
+    answers = iter([busy, page, QUOTA_429])
+    fp = make(lambda request: next(answers))
+    assert [s["id"] for s in fp.poll_feed(max_polls=1)] == ["s1"] and slept == [5]
+    with pytest.raises(FinancePulseError) as info:
+        fp.statements()
+    assert info.value.quota_used_up and slept == [5]
+
+
+def test_a_short_retry_after_does_not_stop_the_pause_from_growing(monkeypatch):
+    slept = []
+    monkeypatch.setattr("finance_pulse.client.time.sleep", slept.append)
+    answers = iter([httpx.Response(503, headers={"retry-after": "1"}, json={"title": "x"})] * 3
+                   + [httpx.Response(429, headers={"retry-after": "30"}, text="Too Many Requests")]
+                   + [httpx.Response(200, json={"data": [{"id": "s1"}], "next_cursor": "c1", "snapshot": SNAPSHOT})])
+    assert [s["id"] for s in make(lambda request: next(answers)).poll_feed(max_polls=1)] == ["s1"]
+    assert slept == [10, 20, 40, 135]        # the growing pause, or the Retry-After when it is longer (30 < 135)
+
+
+def test_poll_feed_failing_mid_run_resumes_without_skipping_or_repeating(tmp_path, monkeypatch):
+    monkeypatch.setattr("finance_pulse.client.time.sleep", lambda s: None)
+    path = tmp_path / "cursor.json"
+    answers = iter([httpx.Response(200, json={"data": [{"id": "s1"}, {"id": "s2"}], "next_cursor": "c2",
+                                              "snapshot": SNAPSHOT}),
+                    PASSING_429[0], QUOTA_429])
+    got = []
+    with pytest.raises(FinancePulseError):
+        for s in make(lambda request: next(answers)).poll_feed(cursor_file=path, limit=2):
+            got.append(s["id"])
+    assert got == ["s1", "s2"]
+    assert json.loads(path.read_text()) == {"cursor": "c2", "handled": []}
+    pages = {"c2": (["s3"], "c3")}
+    assert [s["id"] for s in make(feed_handler(pages, [])).poll_feed(cursor_file=path, limit=2, max_polls=1)] == ["s3"]
+
+
+def test_each_retry_is_logged(monkeypatch, caplog):
+    monkeypatch.setattr("finance_pulse.client.time.sleep", lambda s: None)
+    answers = iter([PASSING_429[0], httpx.Response(200, json={"data": [], "next_cursor": "c1", "snapshot": SNAPSHOT})])
+    with caplog.at_level("WARNING", logger="finance_pulse"):
+        list(make(lambda request: next(answers)).poll_feed(max_polls=1))
+    assert [r.getMessage() for r in caplog.records] == ["429 Too Many Requests; retrying in 5 s"]
+
+
+def test_a_single_call_raises_a_429_at_once(monkeypatch):
+    monkeypatch.setattr("finance_pulse.client.time.sleep", lambda s: pytest.fail("slept"))
+    with pytest.raises(FinancePulseError) as info:
+        make(lambda request: httpx.Response(429, json={"message": "x"})).statements()
     assert info.value.status == 429
 
 
@@ -494,3 +612,34 @@ def test_a_malformed_path_is_a_value_error_not_a_network_failure():
     with pytest.raises(ValueError, match="not a valid path"):
         fp.get("/v2/topics/abc\n")
     assert calls == []
+
+
+def test_poll_feed_follows_the_more_flag(monkeypatch):
+    slept = []
+    monkeypatch.setattr("finance_pulse.client.time.sleep", slept.append)
+    def page(ids, cursor, more):
+        body = {"data": [{"id": i} for i in ids], "next_cursor": cursor, "snapshot": SNAPSHOT}
+        if more is not None:
+            body["more"] = more
+        return httpx.Response(200, json=body)
+    answers = iter([page(["s1"], "c1", True),            # short, but more follows: no pause
+                    page(["s2", "s3"], "c2", False),     # full, but up to date: pause
+                    page(["s4", "s5"], "c3", None),      # no flag: a full page means more
+                    page([], "c3", None)])
+    got = [s["id"] for s in make(lambda request: next(answers)).poll_feed(interval=7, limit=2, max_polls=4)]
+    assert got == ["s1", "s2", "s3", "s4", "s5"]
+    assert slept == [7]
+
+
+def test_poll_feed_follows_empty_more_pages_but_never_a_cursor_that_does_not_move(tmp_path, monkeypatch):
+    slept = []
+    monkeypatch.setattr("finance_pulse.client.time.sleep", slept.append)
+    path = tmp_path / "cursor.json"
+    def page(ids, cursor):
+        return httpx.Response(200, json={"data": [{"id": i} for i in ids], "next_cursor": cursor, "more": True,
+                                         "snapshot": SNAPSHOT})
+    answers = iter([page([], "c1"), page([], "c2"), page(["s1"], "c3"), page([], "c3"), page([], "c4")])
+    got = [s["id"] for s in make(lambda request: next(answers)).poll_feed(cursor_file=path, interval=7, max_polls=5)]
+    assert got == ["s1"]
+    assert slept == [7]                      # only after the page whose cursor stayed at c3
+    assert json.loads(path.read_text()) == {"cursor": "c4", "handled": []}
